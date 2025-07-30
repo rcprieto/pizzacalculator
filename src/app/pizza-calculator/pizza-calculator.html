@@ -1,0 +1,34 @@
+<div class="container">
+  <h2>Calculadora de Massa de Pizza</h2>
+
+  <div class="form-group">
+    <label for="people">Quantidade de Pessoas:</label>
+    <input id="people" type="number" [(ngModel)]="numberOfPeople">
+  </div>
+
+  <div class="form-group">
+    <label for="hydration">Percentual de Hidratação (%):</label>
+    <input id="hydration" type="number" [(ngModel)]="hydrationPercentage" value="65">
+  </div>
+
+  <button (click)="calculatePizza()"><i class="fas fa-calculator"></i> Calcular</button>
+
+  @if(calculated()){
+  <div class="results">
+    
+      <h3>Resultados para {{numberOfPizzasTotal()}}:</h3>
+      <p>Quantidade de Farinha Total: {{ totalFlour() | number:'1.0-1':'pt-BR' }} g</p>
+      <p>Quantidade de Água Total: {{ totalWater() | number:'1.0-1':'pt-BR' }} g</p>
+      <p>Quantidade de Sal: {{ salt() | number:'1.0-1':'pt-BR' }} g</p>
+      <p>Quantidade de Fermento: {{ yeast() | number:'1.0-1':'pt-BR' }} g</p>
+      <hr> <h3>BIGA</h3>
+      <p>Quantidade de Farinha para Biga: {{ bigaFlour() | number:'1.0-1':'pt-BR' }} g</p>
+      <p>Quantidade de Água para Biga: {{ bigaWater() | number:'1.0-1':'pt-BR' }} g</p>
+      
+      <hr> <h3>MASSA</h3>
+      <p>Quantidade de Farinha para Massa: {{ doughFlour() | number:'1.0-1':'pt-BR' }} g</p>
+      <p>Quantidade de Água para Massa: {{ doughWater() | number:'1.0-1':'pt-BR' }} g</p>
+    
+  </div>
+}
+</div>
