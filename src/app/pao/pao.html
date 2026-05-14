@@ -1,0 +1,53 @@
+<div class="container">
+
+  <h2><img src="favicon.ico" class="me-3" alt="" style="width: 40px;">Calculadora de Pães</h2>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col-auto pt-2"><b>Tipo de Pão</b></div>
+      <div class="col-auto"> <select class="form-select" [(ngModel)]="tipo">
+          <option value="I">Italiano</option>
+          <option value="F">De Forma</option>
+        </select></div>
+      <div class="col-auto pt-2"><b>Fermento</b></div>
+      <div class="col-auto"> <select class="form-select" [(ngModel)]="fermento">
+          <option value="N">Natural</option>
+          <option value="F">Fermento Seco</option>
+          <option value="B">Biga</option>
+        </select></div>
+    </div>
+
+    <input id="people" class="mt-2" type="number" [(ngModel)]="numberOfBread">
+  </div>
+
+  <div class="form-group">
+    <label for="hydration">Percentual de Hidratação (%):</label>
+    <input id="hydration" type="number" [(ngModel)]="hydrationPercentage" value="65">
+  </div>
+
+  <button (click)="calculatePizza()"><i class="fas fa-calculator"></i> Calcular</button>
+
+  @if(calculated()){
+  <div class="results">
+
+    <h3>Resultados:</h3>
+    <p># de Pizzas: {{ totalPizzas() | number:'1.0-1':'pt-BR' }}</p>
+    <p>Serve Pessoas: {{ totalPessoas() | number:'1.0-1':'pt-BR' }}</p>
+    <p>Farinha Total: {{ totalFlour() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Água Total: {{ totalWater() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Massa Total: {{ totalMassa() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Sal: {{ salt() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Fermento: {{ yeast() | number:'1.0-1':'pt-BR' }} g</p>
+    <hr>
+    <h3>BIGA</h3>
+    <p>Farinha para Biga: {{ bigaFlour() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Água para Biga: {{ bigaWater() | number:'1.0-1':'pt-BR' }} g</p>
+
+    <hr>
+    <h3>MASSA</h3>
+    <p>Farinha para Massa: {{ doughFlour() | number:'1.0-1':'pt-BR' }} g</p>
+    <p>Água para Massa: {{ doughWater() | number:'1.0-1':'pt-BR' }} g</p>
+
+  </div>
+  }
+</div>

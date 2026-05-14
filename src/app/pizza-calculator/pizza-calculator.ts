@@ -43,8 +43,6 @@ export class PizzaCalculatorComponent {
 
     if (this.tipo() == 'PE30') pizzaPorPessoa = 0.8;
     else if (this.tipo() == 'PE40') pizzaPorPessoa = 0.5;
-    else if (this.tipo() == 'P40') pizzaPorPessoa = 0.5;
-    else if (this.tipo() == 'P30') pizzaPorPessoa = 0.8;
 
     if (this.tipo() == 'P40' || this.tipo() == 'PE40') massaPorPizza = 300;
 
@@ -66,11 +64,14 @@ export class PizzaCalculatorComponent {
     const doughFlour = totalFlour - bigaFlour;
     const doughWater = totalWater - bigaWater;
 
+    if (this.tipo() == 'P40') pizzaPorPessoa = 0.5;
+    else if (this.tipo() == 'P30') pizzaPorPessoa = 0.8;
+
     if (this.tipo() == 'PE30' || this.tipo() == 'PE40') this.totalPessoas.set(this.numberOfPeople());
     else {
       const totalP = numberOfPizzas / pizzaPorPessoa;
 
-      this.totalPessoas.set(parseFloat(totalP.toFixed(1)));
+      this.totalPessoas.set(parseFloat(totalP.toFixed(0)));
     }
 
     this.totalPizzas.set(parseFloat(numberOfPizzas.toFixed(0)));
