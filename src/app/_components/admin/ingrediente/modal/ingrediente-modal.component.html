@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ item?.id ? 'Editar' : 'Novo' }} Ingrediente</h5>
+  <button type="button" class="btn-close" (click)="bsModalRef.hide()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="mb-3">
+      <label class="form-label">Nome <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" formControlName="nome"
+        [class.is-invalid]="f['nome'].touched && f['nome'].invalid" />
+      @if (f['nome'].touched && f['nome'].errors?.['required']) {
+        <div class="invalid-feedback">Nome é obrigatório.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Marca</label>
+      <input type="text" class="form-control" formControlName="marca" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+      <input type="number" class="form-control" formControlName="preco" step="0.01" min="0"
+        [class.is-invalid]="f['preco'].touched && f['preco'].invalid" />
+      @if (f['preco'].touched && f['preco'].errors?.['required']) {
+        <div class="invalid-feedback">Preço é obrigatório.</div>
+      }
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="bsModalRef.hide()">Cancelar</button>
+  <button type="button" class="btn btn-primary" (click)="salvar()" [disabled]="form.invalid">
+    Salvar
+  </button>
+</div>

@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark px-3">
+  <a class="navbar-brand fw-semibold" routerLink="/">Pizza &amp; Pão</a>
+
+  <div class="navbar-nav me-auto">
+    <a class="nav-link" routerLink="/admin/ingredientes" routerLinkActive="active">
+      <i class="fas fa-cubes me-1"></i> Ingredientes
+    </a>
+    <a class="nav-link" routerLink="/admin/receitas" routerLinkActive="active">
+      <i class="fas fa-book-open me-1"></i> Receitas
+    </a>
+  </div>
+
+  <button class="btn btn-outline-light btn-sm" (click)="sair()">
+    <i class="fas fa-sign-out-alt me-1"></i> Sair
+  </button>
+</nav>
+
+<router-outlet />

@@ -26,7 +26,10 @@
             ],
             "styles": [
               "src/styles.css",
-              "./src/lib/fontawesome/css/all.min.css"
+              "./src/lib/fontawesome/css/all.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
             ]
           },
           "configurations": {
@@ -34,8 +37,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -48,13 +51,25 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/_environment/environment.ts",
+                  "with": "src/_environment/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4028,
+             "ssl": true,
+             "sslCert": "ssl/localhost.pem",
+             "sslKey": "ssl/localhost-key.pem"
+          },
           "configurations": {
             "production": {
               "buildTarget": "myapp:build:production"

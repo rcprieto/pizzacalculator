@@ -1,0 +1,112 @@
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4">
+    <a routerLink="/" class="btn btn-outline-secondary btn-sm me-3">
+      <i class="fas fa-arrow-left me-1"></i> Início
+    </a>
+    <h4 class="mb-0">Receitas de Pão</h4>
+  </div>
+
+  <div class="row">
+    <!-- Lista de receitas -->
+    <div class="col-md-4">
+      <div class="list-group shadow-sm">
+        @for (r of receitas; track r.id) {
+        <button type="button"
+                class="list-group-item list-group-item-action"
+                [class.active]="detalhe?.id === r.id"
+                (click)="selecionar(r)">
+          <i class="fas fa-bread-slice me-2"></i>{{ r.nome }}
+        </button>
+        }
+        @empty {
+        <div class="list-group-item text-muted text-center py-4">
+          <i class="fas fa-info-circle me-1"></i> Nenhuma receita disponível.
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Detalhe da receita -->
+    <div class="col-md-8">
+      @if (detalhe && detalhe.id > 0) {
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <div class="d-flex align-items-center gap-3">
+            <h5 class="mb-0 flex-grow-1">{{ detalhe.nome }}</h5>
+            <div class="d-flex align-items-center gap-2">
+              <label class="form-label mb-0 text-nowrap small fw-semibold">Quantidade:</label>
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="quantidade"
+                     min="1" step="1" style="width: 80px;" />
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <h6 class="text-muted mb-2">Ingredientes</h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead class="table-secondary">
+                <tr>
+                  <th>Ingrediente</th>
+                  <th class="text-end">Peso (g)</th>
+                  <th class="text-end">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of detalhe.itens; track item.id) {
+                <tr>
+                  <td>
+                    {{ item.ingredienteNome }}
+                    @if (item.ingredienteMarca) {
+                    <small class="text-muted"> — {{ item.ingredienteMarca }}</small>
+                    }
+
+                    @if (item.observacao) {
+                    <br><small class="text-muted fst-italic">{{ item.observacao }}</small>
+                    }
+                  </td>
+                  <td class="text-end">{{ item.pesoG * quantidade | number:'1.1-3' }}g</td>
+                  <td class="text-end">{{ item.percentual | number:'1.1-2' }}%</td>
+                </tr>
+                }
+                @empty {
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">Sem ingredientes cadastrados.</td>
+                </tr>
+                }
+              </tbody>
+              @if (detalhe.itens.length > 0) {
+              <tfoot class="table-light fw-bold">
+                <tr>
+                  <td>Total</td>
+                  <td class="text-end">
+                    {{ (detalhe.itens | sum:'pesoG') * quantidade | number:'1.1-1' }}g
+                  </td>
+                  <td class="text-end">
+                    {{ detalhe.itens | sum:'percentual' | number:'1.1-1' }}%
+                  </td>
+                </tr>
+              </tfoot>
+              }
+            </table>
+          </div>
+
+          @if (detalhe.modoPreparo) {
+          <hr />
+          <h6 class="text-muted mb-2">Modo de Preparo</h6>
+          <p class="mb-0" style="white-space: pre-wrap;">{{ detalhe.modoPreparo }}</p>
+          }
+
+        </div>
+      </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 300px;">
+        <div class="text-center">
+          <i class="fas fa-bread-slice fa-3x mb-3 opacity-25"></i>
+          <p>Selecione uma receita para visualizar</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

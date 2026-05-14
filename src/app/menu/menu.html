@@ -1,16 +1,43 @@
-<div class="container-fluid d-flex justify-content-center align-items-center vh-100">
-  <div class="card">
-    <div class="card-header">
-      Menu
-    </div>
-    <div class="card-body">
+<div class="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light">
 
-
-      <div class="row">
-        <div class="col-auto"><a href="pizza" class="btn btn-primary me-1"> <i class="fal fa-pizza-slice"></i> Pizza</a></div>
-        <div class="col-auto"><a href="pao" class="btn btn-primary me-1"> <i class="fal fa-bread-loaf"></i> Pão/Bread</a></div>
-      </div>
-
-    </div>
+  <div class="text-center mb-5">
+    <i class="fas fa-pizza-slice fa-3x text-primary mb-3"></i>
+    <h1 class="fw-bold">Pizza & Pão</h1>
+    <p class="text-muted">Calculadoras e receitas artesanais</p>
   </div>
+
+  <div class="row g-4 justify-content-center" style="max-width: 860px; width: 100%;">
+
+    <div class="col-sm-6 col-lg-4">
+      <a [routerLink]="['/pizza']" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-pizza-slice fa-2x text-danger mb-3"></i>
+          <h5 class="fw-semibold">Calculadora de Pizza</h5>
+          <p class="text-muted small mb-0">Calcule massas, hidratação e quantidades por pessoa</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a [routerLink]="['/receitas']" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-bread-slice fa-2x text-warning mb-3"></i>
+          <h5 class="fw-semibold">Ver Receitas</h5>
+          <p class="text-muted small mb-0">Explore as receitas de pão com percentuais do padeiro</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-sm-6 col-lg-4">
+      <a [routerLink]="[adminRoute]" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-cog fa-2x text-secondary mb-3"></i>
+          <h5 class="fw-semibold">Administração</h5>
+          <p class="text-muted small mb-0">Gerencie ingredientes e receitas cadastradas</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
 </div>

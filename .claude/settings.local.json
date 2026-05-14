@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Desenvolvimento/CasaAngular/dotrigo/**)",
+      "Bash(Get-ChildItem -Recurse -Directory)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(dotnet --version)",
+      "Bash(Remove-Item \"C:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API.Domain\\\\Class1.cs\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API.Data\\\\Class1.cs\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API\\\\API.http\" -Force)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); styles=d['projects']['myapp']['architect']['build']['options'].get\\('styles',[]\\); scripts=d['projects']['myapp']['architect']['build']['options'].get\\('scripts',[]\\); print\\('styles:', styles\\); print\\('scripts:', scripts\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k,v\\) for k,v in d.get\\('dependencies',{}\\).items\\(\\)]\")",
+      "Bash(grep -E \"^ngx|^@sweet|^bootstrap$\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('exports:', list\\(d.get\\('exports',{}\\).keys\\(\\)\\)[:5]\\); print\\('main:', d.get\\('main'\\)\\); print\\('module:', d.get\\('module'\\)\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('C:/Desenvolvimento/CasaAngular/PizzaCalculator/node_modules/ngx-bootstrap/package.json'\\)\\); print\\('version:', d['version']\\); print\\('peerDeps:', d.get\\('peerDependencies',{}\\)\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('C:/Desenvolvimento/CasaAngular/PizzaCalculator/node_modules/ngx-bootstrap/pagination/package.json'\\)\\); print\\(list\\(d.keys\\(\\)\\)[:10]\\); print\\('exports:', list\\(d.get\\('exports',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(npm uninstall *)",
+      "Bash(npm list *)",
+      "Bash(dotnet ef *)"
+    ]
+  }
+}

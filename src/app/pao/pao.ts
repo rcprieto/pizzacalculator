@@ -46,7 +46,7 @@ export class PaoComponent {
 
     if (this.tipo() == 'P40' || this.tipo() == 'PE40') massaPorPizza = 300;
 
-    const numberOfPizzas = this.numberOfPeople()! * pizzaPorPessoa;
+    const numberOfPizzas = this.numberOfBread()! * pizzaPorPessoa;
 
     //Total da Massa
     const totalDoughWeight = parseInt(numberOfPizzas.toFixed(0)) * massaPorPizza;
@@ -67,7 +67,7 @@ export class PaoComponent {
     if (this.tipo() == 'P40') pizzaPorPessoa = 0.5;
     else if (this.tipo() == 'P30') pizzaPorPessoa = 0.8;
 
-    if (this.tipo() == 'PE30' || this.tipo() == 'PE40') this.totalPessoas.set(this.numberOfPeople());
+    if (this.tipo() == 'PE30' || this.tipo() == 'PE40') this.totalPessoas.set(this.numberOfBread());
     else {
       const totalP = numberOfPizzas / pizzaPorPessoa;
 
@@ -84,7 +84,7 @@ export class PaoComponent {
     this.bigaWater.set(parseFloat(bigaWater.toFixed(1)));
     this.doughFlour.set(parseFloat(doughFlour.toFixed(1)));
     this.doughWater.set(parseFloat(doughWater.toFixed(1)));
-    this.numberOfPizzasTotal.set(parseFloat(numberOfPizzas.toFixed(1)));
+    this.totalPizzas.set(parseFloat(numberOfPizzas.toFixed(1)));
 
     this.calculated.set(true);
     return;

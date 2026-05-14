@@ -1,13 +1,30 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    {
+      "name": "API (https)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "dotnet: build API",
+      "program": "${workspaceFolder}/API/bin/Debug/net10.0/API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/API",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "launchSettingsProfile": "https",
+      "launchSettingsFilePath": "${workspaceFolder}/API/Properties/launchSettings.json",
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
     {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "url": "https://localhost:4028/"
     },
     {
       "name": "ng test",
