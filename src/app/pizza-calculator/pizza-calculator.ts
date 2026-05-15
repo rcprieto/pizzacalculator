@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-pizza-calculator',
   templateUrl: './pizza-calculator.html',
   styleUrl: './pizza-calculator.css',
-  imports: [CommonModule, FormsModule, DecimalPipe],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PizzaCalculatorComponent {

@@ -1,49 +1,124 @@
-<div class="container">
+<div class="pizza-page">
 
-  <h2><img src="favicon.ico" class="me-3" alt="" style="width: 40px;">Calculadora de Massa de Pizza</h2>
+  <!-- Top bar -->
+  <header class="pizza-topbar">
+    <a routerLink="/" class="topbar-btn">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <span class="topbar-titulo">Calculadora de Pizza</span>
+    <span class="topbar-spacer"></span>
+  </header>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-auto pt-2"><b>Quantidade de</b></div>
-      <div class="col-auto"> <select class="form-select" [(ngModel)]="tipo">
+  <div class="pizza-content">
+
+    <!-- Formulário -->
+    <div class="pizza-card">
+
+      <div class="field-group">
+        <label class="field-label">Calcular quantidade de</label>
+        <select class="field-select" [(ngModel)]="tipo">
           <option value="P30">Pizzas 30cm (Individual)</option>
           <option value="P40">Pizzas 40cm (Pizza Padrão)</option>
           <option value="PE30">Pessoas para Pizza 30cm</option>
           <option value="PE40">Pessoas para Pizza 40cm</option>
-        </select></div>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Quantidade</label>
+        <input class="field-input" type="number" [(ngModel)]="numberOfPeople"
+               min="1" placeholder="Ex: 10" />
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <label class="field-label">Hidratação</label>
+          <span class="field-badge">{{ hydrationPercentage() }}%</span>
+        </div>
+        <input class="field-range" type="range" [(ngModel)]="hydrationPercentage"
+               min="50" max="80" step="1" />
+        <div class="range-labels">
+          <span>50%</span>
+          <span>65%</span>
+          <span>80%</span>
+        </div>
+      </div>
+
+      <button class="calc-btn" (click)="calculatePizza()">
+        <i class="fas fa-calculator me-2"></i> Calcular
+      </button>
+
     </div>
 
-    <input id="people" class="mt-2" type="number" [(ngModel)]="numberOfPeople">
+    <!-- Resultados -->
+    @if (calculated()) {
+
+    <div class="result-summary">
+      <div class="result-pill">
+        <span class="result-pill-value">{{ totalPizzas() | number:'1.0-0':'pt-BR' }}</span>
+        <span class="result-pill-label">{{ tipoNome() }}</span>
+      </div>
+      <div class="result-pill">
+        <span class="result-pill-value">{{ totalPessoas() | number:'1.0-0':'pt-BR' }}</span>
+        <span class="result-pill-label">Pessoas</span>
+      </div>
+      <div class="result-pill">
+        <span class="result-pill-value">{{ totalMassa() | number:'1.0-0':'pt-BR' }}g</span>
+        <span class="result-pill-label">Massa total</span>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title">
+        <i class="fas fa-list me-1"></i> Ingredientes totais
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Farinha</span>
+        <span class="result-row-value">{{ totalFlour() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Água</span>
+        <span class="result-row-value">{{ totalWater() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Sal</span>
+        <span class="result-row-value">{{ salt() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Fermento</span>
+        <span class="result-row-value">{{ yeast() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-section-title result-section-title--biga">
+        <i class="fas fa-clock me-1"></i> Biga (pré-fermento)
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Farinha</span>
+        <span class="result-row-value">{{ bigaFlour() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Água</span>
+        <span class="result-row-value">{{ bigaWater() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+    </div>
+
+    <div class="result-section" style="margin-bottom: 2rem;">
+      <div class="result-section-title result-section-title--massa">
+        <i class="fas fa-layer-group me-1"></i> Massa final
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Farinha</span>
+        <span class="result-row-value">{{ doughFlour() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Água</span>
+        <span class="result-row-value">{{ doughWater() | number:'1.0-1':'pt-BR' }}g</span>
+      </div>
+    </div>
+
+    }
+
   </div>
-
-  <div class="form-group">
-    <label for="hydration">Percentual de Hidratação (%):</label>
-    <input id="hydration" type="number" [(ngModel)]="hydrationPercentage" value="65">
-  </div>
-
-  <button (click)="calculatePizza()"><i class="fas fa-calculator"></i> Calcular</button>
-
-  @if(calculated()){
-  <div class="results">
-
-    <h3>Resultados:</h3>
-    <p># de Pizzas: {{ totalPizzas() | number:'1.0-1':'pt-BR' }}</p>
-    <p>Serve Pessoas: {{ totalPessoas() | number:'1.0-1':'pt-BR' }}</p>
-    <p>Farinha Total: {{ totalFlour() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Água Total: {{ totalWater() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Massa Total: {{ totalMassa() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Sal: {{ salt() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Fermento: {{ yeast() | number:'1.0-1':'pt-BR' }} g</p>
-    <hr>
-    <h3>BIGA</h3>
-    <p>Farinha para Biga: {{ bigaFlour() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Água para Biga: {{ bigaWater() | number:'1.0-1':'pt-BR' }} g</p>
-
-    <hr>
-    <h3>MASSA</h3>
-    <p>Farinha para Massa: {{ doughFlour() | number:'1.0-1':'pt-BR' }} g</p>
-    <p>Água para Massa: {{ doughWater() | number:'1.0-1':'pt-BR' }} g</p>
-
-  </div>
-  }
 </div>

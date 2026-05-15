@@ -10,6 +10,7 @@ public class PizzaCalculatorDbContext : DbContext
     }
 
     public DbSet<Ingrediente> Ingredientes { get; set; }
+    public DbSet<IngredienteGrupo> IngredienteGrupos { get; set; }
     public DbSet<Receita> Receitas { get; set; }
     public DbSet<ReceitaItem> ReceitaItens { get; set; }
 
@@ -41,6 +42,14 @@ public class PizzaCalculatorDbContext : DbContext
             .HasMany(i => i.ReceitaItens)
             .WithOne(ri => ri.Ingrediente)
             .HasForeignKey(ri => ri.IngredienteId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // IngredienteGrupo (1) -> ReceitaItem (N): restrict delete, nullable FK
+        modelBuilder.Entity<IngredienteGrupo>()
+            .HasMany(g => g.ReceitaItens)
+            .WithOne(ri => ri.IngredienteGrupo)
+            .HasForeignKey(ri => ri.IngredienteGrupoId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

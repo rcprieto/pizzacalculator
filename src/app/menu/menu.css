@@ -1,9 +1,142 @@
-.card-hover {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.menu-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f5f0eb;
+}
+
+/* ── Hero ─────────────────────────────────── */
+.menu-hero {
+  width: 100%;
+  background: linear-gradient(155deg, #1c0f0a 0%, #3d200e 55%, #6b3a1f 100%);
+  padding: 1rem 1.5rem 1.75rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+
+.menu-logo-wrap {
+  width: 62px;
+  height: 62px;
+  background: rgba(255,255,255,0.11);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #e8a04d;
+  margin: 0 auto 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-app-name {
+  color: #fff;
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-app-tagline {
+  color: rgba(255,255,255,0.58);
+  font-size: 0.88rem;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Nav cards ────────────────────────────── */
+.menu-nav {
+  width: 100%;
+  max-width: 520px;
+  padding: 0 1rem 2.5rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.menu-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  text-decoration: none;
+  color: #1a1a1a;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+.menu-item:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,0.11);
+}
+
+.menu-item:active {
+  transform: scale(0.972);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.menu-item-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.menu-item-icon--pizza    { background: #fff0ef; color: #c0392b; }
+.menu-item-icon--receitas { background: #fff8e7; color: #c07a0a; }
+.menu-item-icon--admin    { background: #eef1f8; color: #3d5a8a; }
+
+.menu-item-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.menu-item-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-item-sub {
+  font-size: 0.78rem;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-item-chevron {
+  color: #d0c8c0;
+  font-size: 0.72rem;
+  flex-shrink: 0;
 }

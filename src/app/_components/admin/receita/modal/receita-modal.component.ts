@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ReceitaService } from '../../../../_services/receita.service';
 import { IngredienteService } from '../../../../_services/ingrediente.service';
+import { IngredienteGrupoService } from '../../../../_services/ingrediente-grupo.service';
 import { ReceitaDto, ReceitaItemDto } from '../../../../_models/dtos';
 
 @Component({
@@ -18,6 +19,7 @@ export class ReceitaModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   service = inject(ReceitaService);
   ingredienteService = inject(IngredienteService);
+  grupoService = inject(IngredienteGrupoService);
 
   item: ReceitaDto | undefined;
   form: FormGroup = new FormGroup({});
@@ -32,6 +34,7 @@ export class ReceitaModalComponent implements OnInit {
   }
 
   ingredienteIdSelecionado = 0;
+  ingredienteGrupoIdSelecionado: number | null = null;
   pesoGItem = 0;
   percentualItem = 0;
   observacaoItem = '';
@@ -42,6 +45,9 @@ export class ReceitaModalComponent implements OnInit {
   }
   get ingredientes() {
     return this.ingredienteService.todos();
+  }
+  get grupos() {
+    return this.grupoService.todos();
   }
 
   get totalPesoG(): number {
@@ -58,6 +64,7 @@ export class ReceitaModalComponent implements OnInit {
 
   ngOnInit() {
     this.ingredienteService.retornaTodos();
+    this.grupoService.retornaTodos();
     this.inicializarFormulario();
     if (this.item?.id) {
       this.service.retornaReceitaComItens(this.item.id);
@@ -93,6 +100,7 @@ export class ReceitaModalComponent implements OnInit {
     if (!receitaId || receitaId === 0 || !this.ingredienteIdSelecionado) return;
 
     const ing = this.ingredientes.find(i => i.id === Number(this.ingredienteIdSelecionado));
+    const grupo = this.grupos.find(g => g.id === this.ingredienteGrupoIdSelecionado);
     const novoItem: ReceitaItemDto = {
       id: 0,
       receitaId,
@@ -103,6 +111,9 @@ export class ReceitaModalComponent implements OnInit {
       percentual: this.percentualItem,
       observacao: this.observacaoItem,
       ingredientePreco: ing?.preco ?? 0,
+      ingredienteGrupoId: this.ingredienteGrupoIdSelecionado,
+      ingredienteGrupoNome: grupo?.nome ?? '',
+      ingredienteGrupoOrdem: grupo?.ordem ?? 0,
     };
 
     if (this.editandoItemId) {
@@ -118,6 +129,7 @@ export class ReceitaModalComponent implements OnInit {
   editarItem(item: ReceitaItemDto) {
     this.editandoItemId = item.id;
     this.ingredienteIdSelecionado = item.ingredienteId;
+    this.ingredienteGrupoIdSelecionado = item.ingredienteGrupoId ?? null;
     this.pesoGItem = item.pesoG;
     this.percentualItem = item.percentual;
     this.observacaoItem = item.observacao ?? '';
@@ -131,6 +143,7 @@ export class ReceitaModalComponent implements OnInit {
 
   limparFormItem() {
     this.ingredienteIdSelecionado = 0;
+    this.ingredienteGrupoIdSelecionado = null;
     this.pesoGItem = 0;
     this.percentualItem = 0;
     this.observacaoItem = '';

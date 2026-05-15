@@ -23,9 +23,15 @@ public class ReceitaItem
   [Column("rec_item_obs")]
   public string Observacao { get; set; }
 
+  [Column("ing_grupo_id")]
+  public int? IngredienteGrupoId { get; set; }
+
   [ForeignKey("ReceitaId")]
   public Receita? Receita { get; set; }
 
   [ForeignKey("IngredienteId")]
   public Ingrediente? Ingrediente { get; set; }
+
+  [ForeignKey("IngredienteGrupoId")]
+  public IngredienteGrupo? IngredienteGrupo { get; set; }
 }

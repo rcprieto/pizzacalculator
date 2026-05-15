@@ -1,43 +1,48 @@
-<div class="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light">
+<div class="menu-page">
 
-  <div class="text-center mb-5">
-    <i class="fas fa-pizza-slice fa-3x text-primary mb-3"></i>
-    <h1 class="fw-bold">Pizza & Pão</h1>
-    <p class="text-muted">Calculadoras e receitas artesanais</p>
-  </div>
-
-  <div class="row g-4 justify-content-center" style="max-width: 860px; width: 100%;">
-
-    <div class="col-sm-6 col-lg-4">
-      <a [routerLink]="['/pizza']" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
-        <div class="card-body text-center py-5">
-          <i class="fas fa-pizza-slice fa-2x text-danger mb-3"></i>
-          <h5 class="fw-semibold">Calculadora de Pizza</h5>
-          <p class="text-muted small mb-0">Calcule massas, hidratação e quantidades por pessoa</p>
-        </div>
-      </a>
+  <header class="menu-hero">
+    <div class="menu-logo-wrap">
+      <i class="fas fa-bread-slice"></i>
     </div>
+    <h1 class="menu-app-name">Pizza &amp; Pão</h1>
+    <p class="menu-app-tagline">Receitas artesanais · Calculadoras</p>
+  </header>
 
-    <div class="col-sm-6 col-lg-4">
-      <a [routerLink]="['/receitas']" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
-        <div class="card-body text-center py-5">
-          <i class="fas fa-bread-slice fa-2x text-warning mb-3"></i>
-          <h5 class="fw-semibold">Ver Receitas</h5>
-          <p class="text-muted small mb-0">Explore as receitas de pão com percentuais do padeiro</p>
-        </div>
-      </a>
-    </div>
+  <nav class="menu-nav">
 
-    <div class="col-sm-6 col-lg-4">
-      <a [routerLink]="[adminRoute]" class="card card-hover text-decoration-none text-dark h-100 shadow-sm">
-        <div class="card-body text-center py-5">
-          <i class="fas fa-cog fa-2x text-secondary mb-3"></i>
-          <h5 class="fw-semibold">Administração</h5>
-          <p class="text-muted small mb-0">Gerencie ingredientes e receitas cadastradas</p>
-        </div>
-      </a>
-    </div>
+    <a [routerLink]="['/pizza']" class="menu-item">
+      <span class="menu-item-icon menu-item-icon--pizza">
+        <i class="fas fa-pizza-slice"></i>
+      </span>
+      <span class="menu-item-body">
+        <span class="menu-item-title">Calculadora de Pizza</span>
+        <span class="menu-item-sub">Massas, hidratação e quantidades</span>
+      </span>
+      <i class="fas fa-chevron-right menu-item-chevron"></i>
+    </a>
 
-  </div>
+    <a [routerLink]="['/receitas']" class="menu-item">
+      <span class="menu-item-icon menu-item-icon--receitas">
+        <i class="fas fa-bread-slice"></i>
+      </span>
+      <span class="menu-item-body">
+        <span class="menu-item-title">Ver Receitas</span>
+        <span class="menu-item-sub">Percentuais do padeiro artesanal</span>
+      </span>
+      <i class="fas fa-chevron-right menu-item-chevron"></i>
+    </a>
+
+    <a [routerLink]="[adminRoute]" class="menu-item">
+      <span class="menu-item-icon menu-item-icon--admin">
+        <i class="fas fa-sliders-h"></i>
+      </span>
+      <span class="menu-item-body">
+        <span class="menu-item-title">Administração</span>
+        <span class="menu-item-sub">Ingredientes e receitas</span>
+      </span>
+      <i class="fas fa-chevron-right menu-item-chevron"></i>
+    </a>
+
+  </nav>
 
 </div>

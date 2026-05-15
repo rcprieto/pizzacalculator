@@ -16,6 +16,8 @@ public class ReceitaRepository : RepositoryBase<Receita>, IReceitaRepository
         return await Db.Receitas
             .Include(r => r.Itens)
                 .ThenInclude(i => i.Ingrediente)
+            .Include(r => r.Itens)
+                .ThenInclude(i => i.IngredienteGrupo)
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id);
     }

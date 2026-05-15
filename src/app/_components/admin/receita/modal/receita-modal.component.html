@@ -4,135 +4,157 @@
 </div>
 
 <div class="modal-body">
+
   <!-- Dados da receita -->
   <form [formGroup]="form">
-    <div class="row g-2 mb-3">
-      <div class="col-12">
-        <label class="form-label">Nome da Receita <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" formControlName="nome"
-               [class.is-invalid]="f['nome'].touched && f['nome'].invalid" />
-        @if (f['nome'].touched && f['nome'].errors?.['required']) {
-        <div class="invalid-feedback">Nome é obrigatório.</div>
-        }
-      </div>
-      <div class="col-12">
-        <label class="form-label">Modo de Preparo</label>
-        <textarea class="form-control" formControlName="modoPreparo" rows="4" placeholder="Descreva o modo de preparo..."></textarea>
-      </div>
+    <div class="mb-3">
+      <label class="form-label">Nome da Receita <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" formControlName="nome"
+             [class.is-invalid]="f['nome'].touched && f['nome'].invalid"
+             placeholder="Ex: Pão de fermentação natural" />
+      @if (f['nome'].touched && f['nome'].errors?.['required']) {
+      <div class="invalid-feedback">Nome é obrigatório.</div>
+      }
     </div>
-    <div class="d-flex gap-2 mb-4">
-      <button type="button" class="btn btn-primary btn-sm" (click)="salvarReceita()" [disabled]="form.invalid">
-        <i class="fas fa-save me-1"></i> Salvar Receita
-      </button>
+    <div class="mb-3">
+      <label class="form-label">Modo de Preparo</label>
+      <textarea class="form-control" formControlName="modoPreparo" rows="3"
+                placeholder="Descreva o passo a passo..."></textarea>
     </div>
+    <button type="button" class="btn btn-primary btn-sm" (click)="salvarReceita()" [disabled]="form.invalid">
+      <i class="fas fa-save me-1"></i> Salvar Receita
+    </button>
   </form>
 
-  <!-- Itens da receita — só aparece após a receita ter ID -->
+  <!-- Ingredientes — só aparece após ter ID -->
   @if (receita && receita.id > 0) {
-  <hr />
-  <h6 class="mb-3">Ingredientes da Receita</h6>
+  <hr class="my-3" style="border-color:#ede6dd;" />
 
-  <!-- Formulário de item -->
-  <div class="card bg-light mb-3 p-3">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-4">
-        <label class="form-label form-label-sm">Ingrediente</label>
+  <p class="fw-semibold mb-2" style="font-size:.85rem;color:#555;">
+    <i class="fas fa-list me-1"></i> Ingredientes
+  </p>
+
+  <!-- Form de item -->
+  <div class="item-form-card">
+    <div class="row g-2">
+      <div class="col-12 col-sm-6">
+        <label class="form-label">Ingrediente</label>
         <select class="form-select form-select-sm" [(ngModel)]="ingredienteIdSelecionado">
           <option [ngValue]="0" disabled>Selecione...</option>
           @for (ing of ingredientes; track ing.id) {
-          <option [ngValue]="ing.id">{{ ing.nome }} {{ ing.marca ? '— ' + ing.marca : '' }}</option>
+          <option [ngValue]="ing.id">{{ ing.nome }}{{ ing.marca ? ' — ' + ing.marca : '' }}</option>
           }
         </select>
       </div>
-      <div class="col-md-3">
-        <label class="form-label form-label-sm">Peso (g)</label>
+      <div class="col-12 col-sm-6">
+        <label class="form-label">Grupo</label>
+        <select class="form-select form-select-sm" [(ngModel)]="ingredienteGrupoIdSelecionado">
+          <option [ngValue]="null">Sem grupo</option>
+          @for (g of grupos; track g.id) {
+          <option [ngValue]="g.id">{{ g.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-6 col-sm-3">
+        <label class="form-label">Peso (g)</label>
         <input type="number" class="form-control form-control-sm" [(ngModel)]="pesoGItem"
                min="0" step="0.001" />
       </div>
-      <div class="col-md-3">
-        <label class="form-label form-label-sm">Percentual (%)</label>
+      <div class="col-6 col-sm-3">
+        <label class="form-label">Percentual (%)</label>
         <input type="number" class="form-control form-control-sm" [(ngModel)]="percentualItem"
                min="0" step="0.01" />
       </div>
-      <div class="col-12">
-        <label class="form-label form-label-sm">Observação</label>
+      <div class="col-12 col-sm-6">
+        <label class="form-label">Observação</label>
         <input type="text" class="form-control form-control-sm" [(ngModel)]="observacaoItem"
-          maxlength="200" placeholder="Opcional..." />
+               maxlength="200" placeholder="Opcional..." />
       </div>
-      <div class="col-md-2">
-        <button class="btn btn-success btn-sm w-100" (click)="adicionarItem()"
+      <div class="col-12 d-flex gap-2 mt-1">
+        <button class="btn btn-success btn-sm flex-grow-1" (click)="adicionarItem()"
                 [disabled]="!ingredienteIdSelecionado || pesoGItem <= 0">
           <i class="fas fa-{{ editandoItemId ? 'check' : 'plus' }} me-1"></i>
-          {{ editandoItemId ? 'Salvar' : 'Adicionar' }}
+          {{ editandoItemId ? 'Salvar alteração' : 'Adicionar' }}
         </button>
         @if (editandoItemId) {
-        <button class="btn btn-outline-secondary btn-sm w-100 mt-1" (click)="limparFormItem()">
+        <button class="btn btn-outline-secondary btn-sm" (click)="limparFormItem()">
           Cancelar
         </button>
         }
       </div>
     </div>
-
   </div>
 
   <!-- Tabela de itens -->
   <div class="table-responsive">
-    <table class="table table-sm table-hover">
-      <thead class="table-secondary">
+    <table class="receita-itens-table">
+      <thead>
         <tr>
           <th>Ingrediente</th>
-          <th class="text-end">Peso (g)</th>
+          <th class="text-end">Peso</th>
           <th class="text-end">%</th>
-          <th class="text-end">Custo (R$)</th>
-          <th class="text-center" style="width: 90px;">Ações</th>
+          <th class="text-end">Custo</th>
+          <th style="width:76px;"></th>
         </tr>
       </thead>
       <tbody>
         @for (item of receita.itens; track item.id) {
-        <tr [class.table-warning]="editandoItemId === item.id">
+        <tr [class.editando]="editandoItemId === item.id">
           <td>
-            {{ item.ingredienteNome }}
-            @if (item.ingredienteMarca) { <small class="text-muted">— {{ item.ingredienteMarca }}</small> }
-            @if (item.observacao) { <br><small class="text-muted fst-italic">{{ item.observacao }}</small> }
+            <span class="fw-500">{{ item.ingredienteNome }}</span>
+            @if (item.ingredienteMarca) {
+            <small class="text-muted"> — {{ item.ingredienteMarca }}</small>
+            }
+            @if (item.ingredienteGrupoNome) {
+            <span class="badge bg-secondary ms-1 fw-normal" style="font-size:.65em;">{{ item.ingredienteGrupoNome }}</span>
+            }
+            @if (item.observacao) {
+            <br><small class="text-muted fst-italic">{{ item.observacao }}</small>
+            }
           </td>
-          <td class="text-end">{{ item.pesoG | number:'1.1-3' }}g</td>
+          <td class="text-end text-nowrap">{{ item.pesoG | number:'1.1-3' }}g</td>
           <td class="text-end">{{ item.percentual | number:'1.1-2' }}%</td>
-          <td class="text-end">{{ item.pesoG * item.ingredientePreco / 1000 | currency:'BRL':'symbol':'1.2-2' }}</td>
-          <td class="text-center">
-            <button class="btn btn-outline-primary btn-sm me-1" (click)="editarItem(item)" title="Editar">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn btn-outline-danger btn-sm"
-                    (click)="confirmarExclusaoItem(item)" title="Remover">
-              <i class="fas fa-trash"></i>
-            </button>
+          <td class="text-end text-nowrap">{{ item.pesoG * item.ingredientePreco / 1000 | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td class="text-end">
+            <div class="d-flex gap-1 justify-content-end">
+              <button class="action-btn action-btn--edit" (click)="editarItem(item)" title="Editar">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn action-btn--del" (click)="confirmarExclusaoItem(item)" title="Remover">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </td>
         </tr>
         }
         @empty {
         <tr>
-          <td colspan="5" class="text-center text-muted py-3">Nenhum ingrediente adicionado.</td>
+          <td colspan="5" class="text-center text-muted py-3" style="font-size:.85rem;">
+            Nenhum ingrediente adicionado.
+          </td>
         </tr>
         }
       </tbody>
       @if (receita.itens.length > 0) {
-      <tfoot class="table-light fw-bold">
+      <tfoot>
         <tr>
           <td>Total</td>
-          <td class="text-end">{{ totalPesoG | number:'1.1-1' }}g</td>
+          <td class="text-end text-nowrap">{{ totalPesoG | number:'1.1-1' }}g</td>
           <td class="text-end">{{ totalPercentual | number:'1.1-1' }}%</td>
-          <td class="text-end">{{ totalCusto | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td class="text-end text-nowrap">{{ totalCusto | currency:'BRL':'symbol':'1.2-2' }}</td>
           <td></td>
         </tr>
       </tfoot>
       }
     </table>
   </div>
+
   } @else if (!receita || receita.id === 0) {
-  <div class="alert alert-info py-2">
+  <div class="alert alert-info py-2 mt-3" style="font-size:.85rem;">
     <i class="fas fa-info-circle me-1"></i> Salve os dados da receita primeiro para adicionar ingredientes.
   </div>
   }
+
 </div>
 
 <div class="modal-footer">

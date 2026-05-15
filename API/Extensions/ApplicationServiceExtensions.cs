@@ -27,6 +27,7 @@ public static class ApplicationServiceExtensions
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IIngredienteRepository, IngredienteRepository>();
+        services.AddScoped<IIngredienteGrupoRepository, IngredienteGrupoRepository>();
         services.AddScoped<IReceitaRepository, ReceitaRepository>();
         services.AddScoped<IReceitaItemRepository, ReceitaItemRepository>();
 

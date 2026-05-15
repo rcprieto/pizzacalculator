@@ -20,4 +20,7 @@ public class ReceitaItemDto
     public decimal Percentual { get; set; }
     public string Observacao { get; set; }
     public decimal IngredientePreco { get; set; }
+    public int? IngredienteGrupoId { get; set; }
+    public string IngredienteGrupoNome { get; set; }
+    public int IngredienteGrupoOrdem { get; set; }
 }

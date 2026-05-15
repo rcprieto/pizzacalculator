@@ -1,112 +1,136 @@
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4">
-    <a routerLink="/" class="btn btn-outline-secondary btn-sm me-3">
-      <i class="fas fa-arrow-left me-1"></i> Início
+<div class="receitas-page"
+     [class.show-lista]="vistaAtiva === 'lista'"
+     [class.show-detalhe]="vistaAtiva === 'detalhe'">
+
+  <!-- Top bar -->
+  <header class="receitas-topbar">
+    <!-- Volta para home: desktop sempre + mobile na lista -->
+    <a routerLink="/" class="topbar-btn topbar-home">
+      <i class="fas fa-arrow-left"></i>
     </a>
-    <h4 class="mb-0">Receitas de Pão</h4>
-  </div>
+    <!-- Volta para lista: mobile apenas no detalhe -->
+    <button class="topbar-btn topbar-voltar" (click)="voltar()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
 
-  <div class="row">
-    <!-- Lista de receitas -->
-    <div class="col-md-4">
-      <div class="list-group shadow-sm">
-        @for (r of receitas; track r.id) {
-        <button type="button"
-                class="list-group-item list-group-item-action"
-                [class.active]="detalhe?.id === r.id"
-                (click)="selecionar(r)">
-          <i class="fas fa-bread-slice me-2"></i>{{ r.nome }}
-        </button>
-        }
-        @empty {
-        <div class="list-group-item text-muted text-center py-4">
-          <i class="fas fa-info-circle me-1"></i> Nenhuma receita disponível.
-        </div>
-        }
-      </div>
-    </div>
-
-    <!-- Detalhe da receita -->
-    <div class="col-md-8">
-      @if (detalhe && detalhe.id > 0) {
-      <div class="card shadow-sm">
-        <div class="card-header">
-          <div class="d-flex align-items-center gap-3">
-            <h5 class="mb-0 flex-grow-1">{{ detalhe.nome }}</h5>
-            <div class="d-flex align-items-center gap-2">
-              <label class="form-label mb-0 text-nowrap small fw-semibold">Quantidade:</label>
-              <input type="number" class="form-control form-control-sm" [(ngModel)]="quantidade"
-                     min="1" step="1" style="width: 80px;" />
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-
-          <h6 class="text-muted mb-2">Ingredientes</h6>
-          <div class="table-responsive">
-            <table class="table table-sm table-hover">
-              <thead class="table-secondary">
-                <tr>
-                  <th>Ingrediente</th>
-                  <th class="text-end">Peso (g)</th>
-                  <th class="text-end">%</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of detalhe.itens; track item.id) {
-                <tr>
-                  <td>
-                    {{ item.ingredienteNome }}
-                    @if (item.ingredienteMarca) {
-                    <small class="text-muted"> — {{ item.ingredienteMarca }}</small>
-                    }
-
-                    @if (item.observacao) {
-                    <br><small class="text-muted fst-italic">{{ item.observacao }}</small>
-                    }
-                  </td>
-                  <td class="text-end">{{ item.pesoG * quantidade | number:'1.1-3' }}g</td>
-                  <td class="text-end">{{ item.percentual | number:'1.1-2' }}%</td>
-                </tr>
-                }
-                @empty {
-                <tr>
-                  <td colspan="3" class="text-center text-muted py-3">Sem ingredientes cadastrados.</td>
-                </tr>
-                }
-              </tbody>
-              @if (detalhe.itens.length > 0) {
-              <tfoot class="table-light fw-bold">
-                <tr>
-                  <td>Total</td>
-                  <td class="text-end">
-                    {{ (detalhe.itens | sum:'pesoG') * quantidade | number:'1.1-1' }}g
-                  </td>
-                  <td class="text-end">
-                    {{ detalhe.itens | sum:'percentual' | number:'1.1-1' }}%
-                  </td>
-                </tr>
-              </tfoot>
-              }
-            </table>
-          </div>
-
-          @if (detalhe.modoPreparo) {
-          <hr />
-          <h6 class="text-muted mb-2">Modo de Preparo</h6>
-          <p class="mb-0" style="white-space: pre-wrap;">{{ detalhe.modoPreparo }}</p>
-          }
-
-        </div>
-      </div>
+    <span class="topbar-titulo">
+      @if (vistaAtiva === 'detalhe' && detalhe) {
+        {{ detalhe.nome }}
       } @else {
-      <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 300px;">
-        <div class="text-center">
-          <i class="fas fa-bread-slice fa-3x mb-3 opacity-25"></i>
-          <p>Selecione uma receita para visualizar</p>
-        </div>
+        Receitas de Pão
+      }
+    </span>
+
+    <span class="topbar-spacer"></span>
+  </header>
+
+  <div class="receitas-body">
+
+    <!-- ── Lista de receitas ───────────────── -->
+    <div class="receitas-lista-panel">
+      @for (r of receitas; track r.id) {
+      <button type="button"
+              class="receita-item"
+              [class.ativa]="detalhe?.id === r.id"
+              (click)="selecionar(r)">
+        <span class="receita-icon">
+          <i class="fas fa-bread-slice"></i>
+        </span>
+        <span class="receita-item-body">
+          <span class="receita-nome">{{ r.nome }}</span>
+          <span class="receita-meta">{{ r.itens.length }} ingrediente{{ r.itens.length !== 1 ? 's' : '' }}</span>
+        </span>
+        <i class="fas fa-chevron-right receita-chevron"></i>
+      </button>
+      }
+      @empty {
+      <div class="detalhe-empty">
+        <i class="fas fa-info-circle fa-2x"></i>
+        <span>Nenhuma receita disponível.</span>
       </div>
       }
+    </div>
+
+    <!-- ── Detalhe da receita ──────────────── -->
+    <div class="receitas-detalhe-panel">
+
+      @if (detalhe && detalhe.id > 0) {
+
+        <!-- Quantidade -->
+        <div class="detalhe-qtd-bar">
+          <span class="qtd-label">Quantidade</span>
+          <div class="qtd-controle">
+            <button class="qtd-btn" (click)="decrementar()" [disabled]="quantidade <= 1">
+              <i class="fas fa-minus"></i>
+            </button>
+            <span class="qtd-valor">{{ quantidade }}</span>
+            <button class="qtd-btn" (click)="incrementar()">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ingredientes por grupo -->
+        @for (grupo of gruposReceita; track grupo.grupoOrdem) {
+          @if (grupo.grupoNome) {
+          <div class="grupo-header">
+            <i class="fas fa-layer-group me-1"></i>{{ grupo.grupoNome }}
+          </div>
+          }
+          @for (item of grupo.itens; track item.id) {
+          <div class="ing-row">
+            <div class="ing-info">
+              <span class="ing-nome">{{ item.ingredienteNome }}</span>
+              @if (item.ingredienteMarca) {
+              <span class="ing-marca">{{ item.ingredienteMarca }}</span>
+              }
+              @if (item.observacao) {
+              <span class="ing-obs">{{ item.observacao }}</span>
+              }
+            </div>
+            <div class="ing-valores">
+              <span class="ing-peso">{{ item.pesoG * quantidade | number:'1.1-3' }}g</span>
+              <span class="ing-pct">{{ item.percentual | number:'1.1-2' }}%</span>
+            </div>
+          </div>
+          }
+        }
+
+        @if (!detalhe.itens.length) {
+        <div class="detalhe-empty">
+          <i class="fas fa-info-circle fa-2x"></i>
+          <span>Sem ingredientes cadastrados.</span>
+        </div>
+        }
+
+        <!-- Total -->
+        @if (detalhe.itens.length > 0) {
+        <div class="detalhe-total">
+          <span class="total-label">Total</span>
+          <div class="ing-valores">
+            <span class="total-peso">{{ (detalhe.itens | sum:'pesoG') * quantidade | number:'1.1-1' }}g</span>
+            <span class="total-pct">{{ detalhe.itens | sum:'percentual' | number:'1.1-1' }}%</span>
+          </div>
+        </div>
+        }
+
+        <!-- Modo de preparo -->
+        @if (detalhe.modoPreparo) {
+        <div class="preparo-card">
+          <div class="preparo-titulo">
+            <i class="fas fa-list-ol"></i> Modo de Preparo
+          </div>
+          <p class="preparo-texto">{{ detalhe.modoPreparo }}</p>
+        </div>
+        }
+
+      } @else {
+      <div class="detalhe-empty">
+        <i class="fas fa-bread-slice fa-3x"></i>
+        <span>Selecione uma receita para visualizar</span>
+      </div>
+      }
+
     </div>
   </div>
 </div>

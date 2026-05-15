@@ -1,18 +1,30 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark px-3">
-  <a class="navbar-brand fw-semibold" routerLink="/">Pizza &amp; Pão</a>
+<div class="admin-shell">
 
-  <div class="navbar-nav me-auto">
-    <a class="nav-link" routerLink="/admin/ingredientes" routerLinkActive="active">
-      <i class="fas fa-cubes me-1"></i> Ingredientes
+  <header class="admin-topbar">
+    <a routerLink="/" class="admin-topbar-btn">
+      <i class="fas fa-arrow-left"></i>
     </a>
-    <a class="nav-link" routerLink="/admin/receitas" routerLinkActive="active">
-      <i class="fas fa-book-open me-1"></i> Receitas
+    <span class="admin-topbar-titulo">Administração</span>
+    <button class="admin-topbar-btn" (click)="sair()" title="Sair">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </header>
+
+  <nav class="admin-tabs">
+    <a class="admin-tab" routerLink="/admin/ingredientes" routerLinkActive="active">
+      <i class="fas fa-cubes"></i>
+      <span>Ingredientes</span>
     </a>
-  </div>
+    <a class="admin-tab" routerLink="/admin/ingrediente-grupos" routerLinkActive="active">
+      <i class="fas fa-layer-group"></i>
+      <span>Grupos</span>
+    </a>
+    <a class="admin-tab" routerLink="/admin/receitas" routerLinkActive="active">
+      <i class="fas fa-book-open"></i>
+      <span>Receitas</span>
+    </a>
+  </nav>
 
-  <button class="btn btn-outline-light btn-sm" (click)="sair()">
-    <i class="fas fa-sign-out-alt me-1"></i> Sair
-  </button>
-</nav>
+  <router-outlet />
 
-<router-outlet />
+</div>

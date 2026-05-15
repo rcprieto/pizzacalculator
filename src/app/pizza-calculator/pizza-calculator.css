@@ -1,71 +1,247 @@
-.container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: sans-serif;
+/* ── Page shell ──────────────────────────── */
+.pizza-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f0eb;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+/* ── Top bar ─────────────────────────────── */
+.pizza-topbar {
+  background: linear-gradient(135deg, #1c0f0a 0%, #3d200e 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  height: 56px;
+  gap: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+.topbar-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex-shrink: 0;
   cursor: pointer;
-  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s;
 }
 
-button:hover {
-  background-color: #0056b3;
+.topbar-btn:hover  { background: rgba(255,255,255,0.17); }
+.topbar-btn:active { background: rgba(255,255,255,0.22); }
+
+.topbar-titulo {
+  flex: 1;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
 }
 
-.results {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 4px;
+.topbar-spacer {
+  width: 40px;
+  flex-shrink: 0;
 }
 
-.results h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+/* ── Content area ────────────────────────── */
+.pizza-content {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  max-width: 540px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.results p {
-  margin-bottom: 5px;
+/* ── Form card ───────────────────────────── */
+.pizza-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    margin: 10px;
-    padding: 15px;
-  }
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-badge {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #c07a0a;
+  background: #fff8e7;
+  padding: 0.1rem 0.6rem;
+  border-radius: 20px;
+}
+
+.field-select,
+.field-input {
+  width: 100%;
+  padding: 0.7rem 0.875rem;
+  border: 1.5px solid #e0d4c8;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: #1a1a1a;
+  background: #faf6f1;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.field-select:focus,
+.field-input:focus {
+  border-color: #c07a0a;
+  background: #fff;
+}
+
+/* Range slider */
+.field-range {
+  width: 100%;
+  accent-color: #c07a0a;
+  cursor: pointer;
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #aaa;
+  padding: 0 2px;
+}
+
+/* Calcular button */
+.calc-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #1c0f0a 0%, #3d200e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s, transform 0.12s;
+}
+
+.calc-btn:hover  { opacity: 0.9; }
+.calc-btn:active { transform: scale(0.975); }
+
+/* ── Result summary pills ────────────────── */
+.result-summary {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.result-pill {
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.875rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.result-pill-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.result-pill-label {
+  font-size: 0.68rem;
+  color: #aaa;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ── Result sections ─────────────────────── */
+.result-section {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.result-section-title {
+  padding: 0.65rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #555;
+  background: #f5f0eb;
+  border-bottom: 1px solid #ede6dd;
+}
+
+.result-section-title--biga {
+  color: #8b5e3c;
+  background: #fdf6ec;
+  border-bottom-color: #f0e8da;
+}
+
+.result-section-title--massa {
+  color: #c0392b;
+  background: #fff5f5;
+  border-bottom-color: #fde8e8;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.result-row:last-child { border-bottom: none; }
+
+.result-row-label {
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.result-row-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
 }

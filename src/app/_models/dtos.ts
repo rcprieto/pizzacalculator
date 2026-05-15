@@ -25,6 +25,13 @@ export interface ReceitaDto {
   itens: ReceitaItemDto[];
 }
 
+export interface IngredienteGrupoDto {
+  id: number;
+  nome: string;
+  ordem: number;
+  status: boolean;
+}
+
 export interface ReceitaItemDto {
   id: number;
   receitaId: number;
@@ -35,4 +42,7 @@ export interface ReceitaItemDto {
   percentual: number;
   observacao: string;
   ingredientePreco: number;
+  ingredienteGrupoId: number | null;
+  ingredienteGrupoNome: string;
+  ingredienteGrupoOrdem: number;
 }

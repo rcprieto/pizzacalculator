@@ -3,25 +3,25 @@
   <div class="admin-toolbar">
     <div class="admin-search-wrap">
       <i class="fas fa-search admin-search-icon"></i>
-      <input type="text" class="admin-search-input" placeholder="Buscar ingrediente..."
+      <input type="text" class="admin-search-input" placeholder="Buscar grupo..."
              [(ngModel)]="search" (keyup.enter)="buscar()" />
     </div>
-    <button class="admin-add-btn" (click)="abrirModal()" title="Novo ingrediente">
+    <button class="admin-add-btn" (click)="abrirModal()" title="Novo grupo">
       <i class="fas fa-plus"></i>
     </button>
   </div>
 
   <div class="admin-list">
-    @for (item of ingredientes; track item.id) {
+    @for (item of grupos; track item.id) {
     <div class="admin-item">
-      <div class="admin-item-icon admin-item-icon--ing">
-        <i class="fas fa-cube"></i>
+      <div class="admin-item-icon admin-item-icon--grupo">
+        <i class="fas fa-layer-group"></i>
       </div>
       <div class="admin-item-body">
         <span class="admin-item-title">{{ item.nome }}</span>
         <span class="admin-item-sub">
-          {{ item.marca || '—' }}
-          <span class="admin-item-badge">{{ item.preco | currency:'BRL' }}</span>
+          Ordem
+          <span class="admin-item-badge">{{ item.ordem }}</span>
         </span>
       </div>
       <div class="admin-item-actions">
@@ -36,8 +36,8 @@
     }
     @empty {
     <div class="admin-empty">
-      <i class="fas fa-cube fa-2x"></i>
-      <span>Nenhum ingrediente encontrado.</span>
+      <i class="fas fa-layer-group fa-2x"></i>
+      <span>Nenhum grupo encontrado.</span>
     </div>
     }
   </div>

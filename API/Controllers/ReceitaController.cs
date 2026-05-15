@@ -24,6 +24,7 @@ public class ReceitaController : ControllerBase
         _mapper = mapper;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PagedList<ReceitaDto>>> Get([FromQuery] PaginationParams paginationParams)
     {
@@ -34,6 +35,7 @@ public class ReceitaController : ControllerBase
         return Ok(items);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<ReceitaDto>> GetById(int id)
     {

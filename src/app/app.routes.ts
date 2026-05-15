@@ -7,6 +7,7 @@ import { ReceitasComponent } from './receitas/receitas';
 import { authGuard } from '../_guard/auth.guard';
 import { AdminShellComponent } from './_components/admin/admin-shell/admin-shell.component';
 import { IngredienteListaComponent } from './_components/admin/ingrediente/lista/ingrediente-lista.component';
+import { IngredienteGrupoListaComponent } from './_components/admin/ingrediente-grupo/lista/ingrediente-grupo-lista.component';
 import { ReceitaListaComponent } from './_components/admin/receita/lista/receita-lista.component';
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'ingredientes', component: IngredienteListaComponent },
+      { path: 'ingrediente-grupos', component: IngredienteGrupoListaComponent },
       { path: 'receitas', component: ReceitaListaComponent },
       { path: '', redirectTo: 'receitas', pathMatch: 'full' },
     ]
