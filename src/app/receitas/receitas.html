@@ -28,33 +28,45 @@
 
     <!-- ── Lista de receitas ───────────────── -->
     <div class="receitas-lista-panel">
-      @for (r of receitas; track r.id) {
-      <button type="button"
-              class="receita-item"
-              [class.ativa]="detalhe?.id === r.id"
-              (click)="selecionar(r)">
-        <span class="receita-icon">
-          <i class="fas fa-bread-slice"></i>
-        </span>
-        <span class="receita-item-body">
-          <span class="receita-nome">{{ r.nome }}</span>
-          <span class="receita-meta">{{ r.itens.length }} ingrediente{{ r.itens.length !== 1 ? 's' : '' }}</span>
-        </span>
-        <i class="fas fa-chevron-right receita-chevron"></i>
-      </button>
-      }
-      @empty {
+      @if (service.carregando()) {
       <div class="detalhe-empty">
-        <i class="fas fa-info-circle fa-2x"></i>
-        <span>Nenhuma receita disponível.</span>
+        <i class="fas fa-circle-notch fa-spin" style="color:#c07a0a;font-size:1.5rem;"></i>
+        <span>Carregando...</span>
       </div>
+      } @else {
+        @for (r of receitas; track r.id) {
+        <button type="button"
+                class="receita-item"
+                [class.ativa]="detalhe?.id === r.id"
+                (click)="selecionar(r)">
+          <span class="receita-icon">
+            <i class="fas fa-bread-slice"></i>
+          </span>
+          <span class="receita-item-body">
+            <span class="receita-nome">{{ r.nome }}</span>
+            <span class="receita-meta">{{ r.itens.length }} ingrediente{{ r.itens.length !== 1 ? 's' : '' }}</span>
+          </span>
+          <i class="fas fa-chevron-right receita-chevron"></i>
+        </button>
+        }
+        @empty {
+        <div class="detalhe-empty">
+          <i class="fas fa-info-circle fa-2x"></i>
+          <span>Nenhuma receita disponível.</span>
+        </div>
+        }
       }
     </div>
 
     <!-- ── Detalhe da receita ──────────────── -->
     <div class="receitas-detalhe-panel">
 
-      @if (detalhe && detalhe.id > 0) {
+      @if (service.carregandoDetalhe()) {
+      <div class="detalhe-empty">
+        <i class="fas fa-circle-notch fa-spin" style="color:#c07a0a;font-size:1.5rem;"></i>
+        <span>Carregando receita...</span>
+      </div>
+      } @else if (detalhe && detalhe.id > 0) {
 
         <!-- Quantidade -->
         <div class="detalhe-qtd-bar">

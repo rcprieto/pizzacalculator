@@ -12,33 +12,40 @@
   </div>
 
   <div class="admin-list">
-    @for (item of ingredientes; track item.id) {
-    <div class="admin-item">
-      <div class="admin-item-icon admin-item-icon--ing">
-        <i class="fas fa-cube"></i>
-      </div>
-      <div class="admin-item-body">
-        <span class="admin-item-title">{{ item.nome }}</span>
-        <span class="admin-item-sub">
-          {{ item.marca || '—' }}
-          <span class="admin-item-badge">{{ item.preco | currency:'BRL' }}</span>
-        </span>
-      </div>
-      <div class="admin-item-actions">
-        <button class="action-btn action-btn--edit" (click)="abrirModal(item)" title="Editar">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="action-btn action-btn--del" (click)="confirmarExclusao(item)" title="Excluir">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
+    @if (service.carregando()) {
+    <div class="admin-loading">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <span>Carregando...</span>
     </div>
-    }
-    @empty {
-    <div class="admin-empty">
-      <i class="fas fa-cube fa-2x"></i>
-      <span>Nenhum ingrediente encontrado.</span>
-    </div>
+    } @else {
+      @for (item of ingredientes; track item.id) {
+      <div class="admin-item">
+        <div class="admin-item-icon admin-item-icon--ing">
+          <i class="fas fa-cube"></i>
+        </div>
+        <div class="admin-item-body">
+          <span class="admin-item-title">{{ item.nome }}</span>
+          <span class="admin-item-sub">
+            {{ item.marca || '—' }}
+            <span class="admin-item-badge">{{ item.preco | currency:'BRL' }}</span>
+          </span>
+        </div>
+        <div class="admin-item-actions">
+          <button class="action-btn action-btn--edit" (click)="abrirModal(item)" title="Editar">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="action-btn action-btn--del" (click)="confirmarExclusao(item)" title="Excluir">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      }
+      @empty {
+      <div class="admin-empty">
+        <i class="fas fa-cube fa-2x"></i>
+        <span>Nenhum ingrediente encontrado.</span>
+      </div>
+      }
     }
   </div>
 

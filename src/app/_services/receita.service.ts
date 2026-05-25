@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { take } from 'rxjs';
+import { take, finalize } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ReceitaDto, ReceitaItemDto } from '../_models/dtos';
 import { PaginatedResult, setPaginationHeader } from '../../_helpers/pagination';
@@ -15,11 +15,14 @@ export class ReceitaService {
   receitas = signal<ReceitaDto[]>([]);
   paginatedResult = signal<PaginatedResult<ReceitaDto[]>>({});
   receitaAtual = signal<ReceitaDto | null>(null);
+  carregando = signal<boolean>(false);
+  carregandoDetalhe = signal<boolean>(false);
 
   retornaReceitas(pageNumber: number, pageSize: number, search = '', orderBy = 'Nome', order = 'asc') {
+    this.carregando.set(true);
     const params = setPaginationHeader(pageNumber, pageSize, search, orderBy, order);
     return this.http.get<ReceitaDto[]>(this.baseUrl, { observe: 'response', params })
-      .pipe(take(1))
+      .pipe(take(1), finalize(() => this.carregando.set(false)))
       .subscribe({
         next: response => {
           this.receitas.set(response.body as ReceitaDto[]);
@@ -32,8 +35,9 @@ export class ReceitaService {
   }
 
   retornaReceitaComItens(id: number) {
+    this.carregandoDetalhe.set(true);
     return this.http.get<ReceitaDto>(`${this.baseUrl}/${id}`)
-      .pipe(take(1))
+      .pipe(take(1), finalize(() => this.carregandoDetalhe.set(false)))
       .subscribe({ next: receita => this.receitaAtual.set(receita) });
   }
 

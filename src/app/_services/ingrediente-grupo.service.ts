@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { take } from 'rxjs';
+import { take, finalize } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { IngredienteGrupoDto } from '../_models/dtos';
 import { PaginatedResult, setPaginationHeader } from '../../_helpers/pagination';
@@ -15,11 +15,13 @@ export class IngredienteGrupoService {
   grupos = signal<IngredienteGrupoDto[]>([]);
   paginatedResult = signal<PaginatedResult<IngredienteGrupoDto[]>>({});
   todos = signal<IngredienteGrupoDto[]>([]);
+  carregando = signal<boolean>(false);
 
   retornaGrupos(pageNumber: number, pageSize: number, search = '', orderBy = 'Nome', order = 'asc') {
+    this.carregando.set(true);
     const params = setPaginationHeader(pageNumber, pageSize, search, orderBy, order);
     return this.http.get<IngredienteGrupoDto[]>(this.baseUrl, { observe: 'response', params })
-      .pipe(take(1))
+      .pipe(take(1), finalize(() => this.carregando.set(false)))
       .subscribe({
         next: response => {
           this.grupos.set(response.body as IngredienteGrupoDto[]);

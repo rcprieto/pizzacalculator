@@ -17,7 +17,22 @@
       "Bash(python -c \"import json; d=json.load\\(open\\('C:/Desenvolvimento/CasaAngular/PizzaCalculator/node_modules/ngx-bootstrap/pagination/package.json'\\)\\); print\\(list\\(d.keys\\(\\)\\)[:10]\\); print\\('exports:', list\\(d.get\\('exports',{}\\).keys\\(\\)\\)\\)\")",
       "Bash(npm uninstall *)",
       "Bash(npm list *)",
-      "Bash(dotnet ef *)"
+      "Bash(dotnet ef *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Recurse -Directory)",
+      "Bash(flutter --version)",
+      "Bash(flutter create *)",
+      "Bash(flutter pub *)",
+      "Bash(flutter analyze *)",
+      "Bash(dart run *)",
+      "Bash(dart analyze *)",
+      "Bash(dart pub *)",
+      "Bash(findstr /i \"shared_preferences\")",
+      "Bash(curl -s \"https://pub.dev/api/packages/shared_preferences_android\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); vs=[v['version'] for v in d['versions'][-5:]]; print\\('\\\\n'.join\\(vs\\)\\)\")",
+      "PowerShell($resp = Invoke-RestMethod -Uri \"https://pub.dev/api/packages/shared_preferences_android\" -ErrorAction SilentlyContinue; if \\($resp\\) { $resp.versions | Select-Object -Last 5 | ForEach-Object { $_.version } } else { \"Could not reach pub.dev\" })",
+      "Bash(grep -rn \"toStringAsFixed\\\\|NumberFormat\\\\|R\\\\\\\\\\\\$\\\\|preco\\\\|pesoG\\\\|percentual\\\\|\\\\\\\\.text =\" lib/ --include=\"*.dart\")",
+      "Bash(git ls-files *)",
+      "Bash(grep -E \"\\\\.\\(iml|gradle\\)$|build/|\\\\.dart_tool|\\\\.flutter-plugins|local\\\\.properties|key\\\\.properties\")"
     ]
   }
 }
