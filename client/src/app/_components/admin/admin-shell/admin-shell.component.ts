@@ -10,8 +10,11 @@ import { AccountService } from '../../../_services/account.service';
   templateUrl: './admin-shell.component.html',
 })
 export class AdminShellComponent {
-  private accountService = inject(AccountService);
+  accountService = inject(AccountService);
   private router = inject(Router);
+
+  get email() { return this.accountService.currentUser()?.email ?? ''; }
+  get isAdmin() { return this.accountService.isAdmin(); }
 
   sair() {
     this.accountService.logout();

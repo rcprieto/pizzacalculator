@@ -1,0 +1,73 @@
+<div class="admin-content">
+
+  <div class="admin-toolbar">
+    <div class="admin-search-wrap">
+      <i class="fas fa-users admin-search-icon"></i>
+      <span class="admin-search-input" style="line-height: 40px; color: #666;">Usuários do sistema</span>
+    </div>
+    <button class="admin-add-btn" (click)="mostrarFormulario = !mostrarFormulario" title="Novo usuário">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  @if (mostrarFormulario) {
+  <div class="admin-form-card">
+    <h4 class="admin-form-title">Novo Usuário</h4>
+    @if (erro) {
+    <div class="admin-form-erro">{{ erro }}</div>
+    }
+    <div class="admin-form-row">
+      <input type="email" class="admin-form-input" placeholder="E-mail"
+             [(ngModel)]="novoEmail" />
+    </div>
+    <div class="admin-form-row">
+      <input type="password" class="admin-form-input" placeholder="Senha"
+             [(ngModel)]="novaSenha" />
+    </div>
+    <div class="admin-form-actions">
+      <button class="admin-btn admin-btn--cancel" (click)="mostrarFormulario = false">Cancelar</button>
+      <button class="admin-btn admin-btn--save" (click)="salvar()" [disabled]="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar' }}
+      </button>
+    </div>
+  </div>
+  }
+
+  <div class="admin-list">
+    @if (carregando) {
+    <div class="admin-loading">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <span>Carregando...</span>
+    </div>
+    } @else {
+      @for (usuario of usuarios; track usuario.id) {
+      <div class="admin-item">
+        <div class="admin-item-icon admin-item-icon--usr">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="admin-item-body">
+          <span class="admin-item-title">{{ usuario.email }}</span>
+          <span class="admin-item-sub">
+            <span class="admin-item-badge admin-item-badge--role">{{ usuario.role }}</span>
+          </span>
+        </div>
+        <div class="admin-item-actions">
+          <button class="action-btn action-btn--del"
+                  (click)="confirmarExclusao(usuario)"
+                  [disabled]="usuario.email === currentUserId"
+                  [title]="usuario.email === currentUserId ? 'Não é possível desativar sua própria conta' : 'Desativar'">
+            <i class="fas fa-user-slash"></i>
+          </button>
+        </div>
+      </div>
+      }
+      @empty {
+      <div class="admin-empty">
+        <i class="fas fa-users fa-2x"></i>
+        <span>Nenhum usuário encontrado.</span>
+      </div>
+      }
+    }
+  </div>
+
+</div>

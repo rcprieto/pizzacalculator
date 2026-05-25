@@ -11,9 +11,9 @@ GoRouter buildRouter(AccountService accountService) {
     initialLocation: '/',
     redirect: (context, state) {
       final logado = accountService.estaLogado;
-      final irParaAdmin =
-          state.matchedLocation.startsWith('/admin');
-      if (irParaAdmin && !logado) return '/login';
+      final rotaProtegida = state.matchedLocation.startsWith('/admin') ||
+          state.matchedLocation.startsWith('/receitas');
+      if (rotaProtegida && !logado) return '/login';
       return null;
     },
     refreshListenable: accountService,

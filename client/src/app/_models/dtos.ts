@@ -1,12 +1,24 @@
 export interface UserDto {
   email: string;
   token: string;
-  password?: string;
+  role: string;
 }
 
 export interface LoginDto {
   email: string;
   password: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+}
+
+export interface UsuarioDto {
+  id: string;
+  email: string;
+  role: string;
+  status: boolean;
 }
 
 export interface IngredienteDto {

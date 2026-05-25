@@ -1,11 +1,15 @@
 class UserDto {
   final String email;
   final String token;
+  final String role;
 
-  UserDto({required this.email, required this.token});
+  UserDto({required this.email, required this.token, this.role = ''});
 
-  factory UserDto.fromJson(Map<String, dynamic> json) =>
-      UserDto(email: json['email'], token: json['token']);
+  factory UserDto.fromJson(Map<String, dynamic> json) => UserDto(
+    email: json['email'] ?? '',
+    token: json['token'] ?? '',
+    role: json['role'] ?? '',
+  );
 }
 
 class LoginDto {
@@ -15,6 +19,36 @@ class LoginDto {
   LoginDto({required this.email, required this.password});
 
   Map<String, dynamic> toJson() => {'email': email, 'password': password};
+}
+
+class RegisterDto {
+  final String email;
+  final String password;
+
+  RegisterDto({required this.email, required this.password});
+
+  Map<String, dynamic> toJson() => {'email': email, 'password': password};
+}
+
+class UsuarioDto {
+  final String id;
+  final String email;
+  final String role;
+  final bool status;
+
+  UsuarioDto({
+    required this.id,
+    required this.email,
+    required this.role,
+    required this.status,
+  });
+
+  factory UsuarioDto.fromJson(Map<String, dynamic> json) => UsuarioDto(
+    id: json['id'] ?? '',
+    email: json['email'] ?? '',
+    role: json['role'] ?? '',
+    status: json['status'] ?? true,
+  );
 }
 
 class IngredienteDto {

@@ -34,7 +34,12 @@
       "Bash(git ls-files *)",
       "Bash(grep -E \"\\\\.\\(iml|gradle\\)$|build/|\\\\.dart_tool|\\\\.flutter-plugins|local\\\\.properties|key\\\\.properties\")",
       "Bash(cat android/app/build.gradle.kts)",
-      "Bash(cat android/app/build.gradle)"
+      "Bash(cat android/app/build.gradle)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Read(//c/Desenvolupament/CasaAngular/PizzaCalculator/API.Data/Migrations/**)",
+      "PowerShell(cd \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API\"; dotnet build 2>&1 | Where-Object { $_ -match \"error|Error|Build succeeded|Build FAILED\" })",
+      "PowerShell(Get-ChildItem \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Directory | ForEach-Object { $_.Name })"
     ]
   }
 }

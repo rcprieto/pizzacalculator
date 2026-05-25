@@ -18,10 +18,28 @@ export class ReceitaService {
   carregando = signal<boolean>(false);
   carregandoDetalhe = signal<boolean>(false);
 
+  // Endpoint admin: retorna só as receitas do usuário (ou todas se Admin)
   retornaReceitas(pageNumber: number, pageSize: number, search = '', orderBy = 'Nome', order = 'asc') {
     this.carregando.set(true);
     const params = setPaginationHeader(pageNumber, pageSize, search, orderBy, order);
     return this.http.get<ReceitaDto[]>(this.baseUrl, { observe: 'response', params })
+      .pipe(take(1), finalize(() => this.carregando.set(false)))
+      .subscribe({
+        next: response => {
+          this.receitas.set(response.body as ReceitaDto[]);
+          this.paginatedResult.set({
+            result: this.receitas(),
+            pagination: JSON.parse(response.headers.get('Pagination')!)
+          });
+        }
+      });
+  }
+
+  // Endpoint público: todas as receitas ativas (sem autenticação)
+  retornaReceitasPublicas(pageNumber: number, pageSize: number, search = '', orderBy = 'Nome', order = 'asc') {
+    this.carregando.set(true);
+    const params = setPaginationHeader(pageNumber, pageSize, search, orderBy, order);
+    return this.http.get<ReceitaDto[]>(`${this.baseUrl}/publica`, { observe: 'response', params })
       .pipe(take(1), finalize(() => this.carregando.set(false)))
       .subscribe({
         next: response => {

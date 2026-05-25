@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize]
+[Authorize(Policy = "RequireUserRole")]
 [Route("api/[controller]")]
 [ApiController]
 public class IngredienteController : ControllerBase
@@ -22,6 +22,7 @@ public class IngredienteController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpGet]
     public async Task<ActionResult<PagedList<IngredienteDto>>> Get([FromQuery] PaginationParams paginationParams)
     {
@@ -32,6 +33,7 @@ public class IngredienteController : ControllerBase
         return Ok(items);
     }
 
+    // todos: qualquer usuário autenticado (necessário para montar receitas)
     [HttpGet("todos")]
     public async Task<ActionResult<IEnumerable<IngredienteDto>>> GetTodos()
     {
@@ -39,6 +41,7 @@ public class IngredienteController : ControllerBase
         return Ok(_mapper.Map<IEnumerable<IngredienteDto>>(query));
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpPost]
     public async Task<ActionResult<IngredienteDto>> Add([FromBody] IngredienteDto model)
     {
@@ -50,6 +53,7 @@ public class IngredienteController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpPut]
     public async Task<ActionResult<IngredienteDto>> Update([FromBody] IngredienteDto model)
     {
@@ -60,6 +64,7 @@ public class IngredienteController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {

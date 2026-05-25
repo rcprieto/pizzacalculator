@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using API.Domain.DTOs;
+using API.Domain.Entidades;
 using API.Domain.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -10,19 +10,21 @@ namespace API.Domain.Services;
 
 public class TokenService : ITokenService
 {
-    public readonly SymmetricSecurityKey _key;
+    private readonly SymmetricSecurityKey _key;
 
     public TokenService(IConfiguration configuration)
     {
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
     }
 
-    public async Task<string> CreateToken(UserDto user)
+    public string CreateToken(AppUser user, string role)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.UniqueName, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Role, role),
         };
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -35,7 +37,6 @@ public class TokenService : ITokenService
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
-
         return tokenHandler.WriteToken(token);
     }
 }

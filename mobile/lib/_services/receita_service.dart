@@ -11,6 +11,38 @@ class ReceitaService extends ChangeNotifier {
   bool carregando = false;
   bool carregandoDetalhe = false;
 
+  Future<void> retornaReceitasPublicas({
+    int pageNumber = 1,
+    int pageSize = 100,
+    String search = '',
+  }) async {
+    carregando = true;
+    notifyListeners();
+    try {
+      final query = buildPaginationQuery(
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        search: search,
+        orderBy: 'nome',
+        order: 'asc',
+      );
+      final response = await http.get(
+        Uri.parse('${baseUrl}receita/publica?$query'),
+        headers: buildHeaders(null),
+      );
+      if (response.statusCode == 200) {
+        paginatedResult = parsePaginatedResponse(
+          response,
+          ReceitaDto.fromJson,
+        );
+        receitas = List.from(paginatedResult!.result);
+      }
+    } finally {
+      carregando = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> retornaReceitas({
     int pageNumber = 1,
     int pageSize = 10,

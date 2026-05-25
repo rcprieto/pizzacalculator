@@ -1,8 +1,8 @@
-using API.Domain.DTOs;
+using API.Domain.Entidades;
 
 namespace API.Domain.Interfaces.Services;
 
 public interface ITokenService
 {
-    Task<string> CreateToken(UserDto user);
+    string CreateToken(AppUser user, string role);
 }

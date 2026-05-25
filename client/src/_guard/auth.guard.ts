@@ -9,3 +9,11 @@ export const authGuard: CanActivateFn = () => {
   router.navigateByUrl('/login');
   return false;
 };
+
+export const adminGuard: CanActivateFn = () => {
+  const accountService = inject(AccountService);
+  const router = inject(Router);
+  if (accountService.isAdmin()) return true;
+  router.navigateByUrl('/admin');
+  return false;
+};

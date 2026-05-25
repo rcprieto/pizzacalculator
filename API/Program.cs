@@ -1,7 +1,11 @@
 using System.Globalization;
 using System.Text.Json.Serialization;
+using API.Data;
+using API.Data.Context;
 using API.Domain.Auxiliar;
+using API.Domain.Entidades;
 using API.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.IdentityModel.Logging;
@@ -49,6 +53,30 @@ if (builder.Environment.IsDevelopment())
 IdentityModelEventSource.LogCompleteSecurityArtifact = true;
 
 var app = builder.Build();
+
+// Seed inicial
+using (var scope = app.Services.CreateScope())
+{
+  var services = scope.ServiceProvider;
+  var logger = services.GetRequiredService<ILogger<Program>>();
+  // try
+  // {
+  //     // await DbInitializer.SeedAsync(
+  //     //     services.GetRequiredService<UserManager<AppUser>>(),
+  //     //     services.GetRequiredService<RoleManager<IdentityRole>>(),
+  //     //     services.GetRequiredService<PizzaCalculatorDbContext>());
+
+  //     logger.LogInformation("Seed executado com sucesso.");
+  // }
+  // catch (Exception ex)
+  // {
+  //     logger.LogError(ex, "Erro ao executar seed do banco de dados");
+  //     Console.Error.WriteLine("=== SEED FALHOU ===");
+  //     Console.Error.WriteLine(ex.Message);
+  //     if (ex.InnerException != null)
+  //         Console.Error.WriteLine(ex.InnerException.Message);
+  // }
+}
 
 app.UseRouting();
 app.UseCors(x =>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../_helpers/credentials_helper.dart';
 import '../../_models/dtos.dart';
 import '../../_services/account_service.dart';
 import '../../_theme/app_colors.dart';
@@ -19,6 +20,22 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _verSenha = false;
 
   @override
+  void initState() {
+    super.initState();
+    _carregarCredenciais();
+  }
+
+  Future<void> _carregarCredenciais() async {
+    final credenciais = await carregarCredenciais();
+    if (credenciais != null && mounted) {
+      setState(() {
+        _emailCtrl.text = credenciais.email;
+        _senhaCtrl.text = credenciais.senha;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _emailCtrl.dispose();
     _senhaCtrl.dispose();
@@ -27,18 +44,67 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _entrar() async {
     if (!_formKey.currentState!.validate()) return;
+    final email = _emailCtrl.text.trim();
+    final senha = _senhaCtrl.text;
     final service = context.read<AccountService>();
-    final erro = await service.login(
-      LoginDto(email: _emailCtrl.text.trim(), password: _senhaCtrl.text),
-    );
+    final erro = await service.login(LoginDto(email: email, password: senha));
     if (!mounted) return;
     if (erro != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(erro), backgroundColor: AppColors.deleteFg),
       );
-    } else {
-      context.go('/admin/receitas');
+      return;
     }
+    await _perguntarSalvarCredenciais(email, senha);
+    if (mounted) context.go('/admin/receitas');
+  }
+
+  Future<void> _perguntarSalvarCredenciais(String email, String senha) async {
+    final credenciaisSalvas = await carregarCredenciais();
+    if (credenciaisSalvas?.email == email) return;
+
+    if (!mounted) return;
+    final salvar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.lock_outline, color: AppColors.accent, size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Salvar acesso',
+              style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Deseja salvar o e-mail e a senha neste dispositivo para facilitar o próximo acesso?',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(
+              'Não',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Salvar',
+              style: TextStyle(
+                color: AppColors.accent,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (salvar == true) await salvarCredenciais(email, senha);
   }
 
   @override

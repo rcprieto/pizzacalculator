@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-[Authorize]
+[Authorize(Policy = "RequireUserRole")]
 [Route("api/[controller]")]
 [ApiController]
 public class IngredienteGrupoController : ControllerBase
@@ -22,6 +22,7 @@ public class IngredienteGrupoController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpGet]
     public async Task<ActionResult<PagedList<IngredienteGrupoDto>>> Get([FromQuery] PaginationParams paginationParams)
     {
@@ -40,6 +41,7 @@ public class IngredienteGrupoController : ControllerBase
         return Ok(lista.OrderBy(g => g.Ordem).ThenBy(g => g.Nome));
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpPost]
     public async Task<ActionResult<IngredienteGrupoDto>> Add([FromBody] IngredienteGrupoDto model)
     {
@@ -51,6 +53,7 @@ public class IngredienteGrupoController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpPut]
     public async Task<ActionResult<IngredienteGrupoDto>> Update([FromBody] IngredienteGrupoDto model)
     {
@@ -61,6 +64,7 @@ public class IngredienteGrupoController : ControllerBase
         return Ok(model);
     }
 
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {

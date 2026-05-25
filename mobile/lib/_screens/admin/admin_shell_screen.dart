@@ -6,6 +6,7 @@ import '../../_theme/app_colors.dart';
 import 'ingrediente/ingrediente_lista_screen.dart';
 import 'ingrediente_grupo/ingrediente_grupo_lista_screen.dart';
 import 'receita/receita_lista_screen.dart';
+import 'usuario/usuario_lista_screen.dart';
 
 class AdminShellScreen extends StatefulWidget {
   const AdminShellScreen({super.key});
@@ -17,17 +18,28 @@ class AdminShellScreen extends StatefulWidget {
 class _AdminShellScreenState extends State<AdminShellScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _wasAdmin = false;
 
-  static const _abas = [
+  static const _abasAdmin = [
     (icon: Icons.bakery_dining, label: 'Receitas'),
     (icon: Icons.egg_alt, label: 'Ingredientes'),
     (icon: Icons.layers, label: 'Grupos'),
+    (icon: Icons.people, label: 'Usuários'),
+  ];
+
+  static const _abasUser = [
+    (icon: Icons.bakery_dining, label: 'Receitas'),
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _abas.length, vsync: this);
+    final isAdmin = context.read<AccountService>().isAdmin;
+    _wasAdmin = isAdmin;
+    _tabController = TabController(
+      length: isAdmin ? _abasAdmin.length : _abasUser.length,
+      vsync: this,
+    );
   }
 
   @override
@@ -36,10 +48,26 @@ class _AdminShellScreenState extends State<AdminShellScreen>
     super.dispose();
   }
 
+  void _reconstruirTabs(bool isAdmin) {
+    if (_wasAdmin == isAdmin) return;
+    _wasAdmin = isAdmin;
+    _tabController.dispose();
+    _tabController = TabController(
+      length: isAdmin ? _abasAdmin.length : _abasUser.length,
+      vsync: this,
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    final email =
-        context.watch<AccountService>().usuarioAtual?.email ?? '';
+    final account = context.watch<AccountService>();
+    final isAdmin = account.isAdmin;
+    final email = account.usuarioAtual?.email ?? '';
+    _reconstruirTabs(isAdmin);
+
+    final abas = isAdmin ? _abasAdmin : _abasUser;
+
     return Scaffold(
       backgroundColor: AppColors.pageBg,
       appBar: AppBar(
@@ -88,7 +116,7 @@ class _AdminShellScreenState extends State<AdminShellScreen>
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
-          tabs: _abas
+          tabs: abas
               .map(
                 (a) => Tab(
                   icon: Icon(a.icon, size: 18),
@@ -101,10 +129,13 @@ class _AdminShellScreenState extends State<AdminShellScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          ReceitaAdminListaScreen(),
-          IngredienteListaScreen(),
-          IngredienteGrupoListaScreen(),
+        children: [
+          const ReceitaAdminListaScreen(),
+          if (isAdmin) ...[
+            const IngredienteListaScreen(),
+            const IngredienteGrupoListaScreen(),
+            const UsuarioListaScreen(),
+          ],
         ],
       ),
     );

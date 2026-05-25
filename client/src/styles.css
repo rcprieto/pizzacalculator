@@ -45,12 +45,26 @@
 .admin-topbar-btn:hover  { background: rgba(255,255,255,0.17); color: #fff; }
 .admin-topbar-btn:active { background: rgba(255,255,255,0.22); }
 
-.admin-topbar-titulo {
+.admin-topbar-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-topbar-titulo {
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
-  text-align: center;
+}
+
+.admin-topbar-email {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.68rem;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Tab nav ─────────────────────────────── */
@@ -187,6 +201,7 @@
 .admin-item-icon--ing    { background: #fff8e7; color: #c07a0a; }
 .admin-item-icon--grupo  { background: #f0f4ff; color: #3d5a8a; }
 .admin-item-icon--rec    { background: #fff0ef; color: #c0392b; }
+.admin-item-icon--usr    { background: #f0fff4; color: #27ae60; }
 
 .admin-item-body {
   flex: 1;
@@ -221,6 +236,11 @@
   padding: 0.05rem 0.45rem;
   font-size: 0.72rem;
   font-weight: 500;
+}
+
+.admin-item-badge--role {
+  background: #f0f4ff;
+  color: #3d5a8a;
 }
 
 .admin-item-actions {
@@ -419,4 +439,79 @@
   font-weight: 700;
   color: #1a1a1a;
   border-top: 2px solid #e0d4c8;
+}
+
+/* ── Inline registration form (usuarios) ─── */
+.admin-form-card {
+  background: #fff;
+  border-bottom: 1px solid #e8ddd4;
+  padding: 1rem;
+}
+
+.admin-form-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem 0;
+}
+
+.admin-form-erro {
+  background: #fff0ef;
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-form-row { margin-bottom: 0.625rem; }
+
+.admin-form-input {
+  width: 100%;
+  border: 1.5px solid #e0d4c8;
+  border-radius: 10px;
+  background: #faf6f1;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.875rem;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  box-sizing: border-box;
+}
+
+.admin-form-input:focus {
+  border-color: #c07a0a;
+  background: #fff;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.admin-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+
+.admin-btn:active { opacity: 0.8; }
+.admin-btn:disabled { opacity: 0.5; cursor: default; }
+
+.admin-btn--cancel {
+  background: #f0ebe5;
+  color: #555;
+}
+
+.admin-btn--save {
+  background: linear-gradient(135deg, #1c0f0a 0%, #3d200e 100%);
+  color: #fff;
 }

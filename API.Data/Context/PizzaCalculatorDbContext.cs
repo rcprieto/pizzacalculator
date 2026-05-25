@@ -1,9 +1,11 @@
 using API.Domain.Entidades;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Context;
 
-public class PizzaCalculatorDbContext : DbContext
+public class PizzaCalculatorDbContext : IdentityDbContext<AppUser, IdentityRole, string>
 {
     public PizzaCalculatorDbContext(DbContextOptions<PizzaCalculatorDbContext> options) : base(options)
     {
@@ -17,6 +19,8 @@ public class PizzaCalculatorDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AppUser>().ToTable("tbc_usuario");
 
         modelBuilder.Entity<Ingrediente>()
             .Property(p => p.Preco)
@@ -51,5 +55,13 @@ public class PizzaCalculatorDbContext : DbContext
             .HasForeignKey(ri => ri.IngredienteGrupoId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // AppUser (1) -> Receita (N)
+        modelBuilder.Entity<AppUser>()
+            .HasMany(u => u.Receitas)
+            .WithOne(r => r.User)
+            .HasForeignKey(r => r.UserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

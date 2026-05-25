@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../_helpers/numero_helper.dart';
 import '../../_models/dtos.dart';
+import '../../_services/account_service.dart';
 import '../../_services/receita_service.dart';
 import '../../_theme/app_colors.dart';
 
@@ -18,7 +19,8 @@ class _ReceitasScreenState extends State<ReceitasScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ReceitaService>().retornaReceitas();
+      final token = context.read<AccountService>().usuarioAtual?.token;
+      context.read<ReceitaService>().retornaReceitas(token: token);
     });
   }
 

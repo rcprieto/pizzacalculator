@@ -1,0 +1,39 @@
+<div class="admin-shell">
+
+  <header class="admin-topbar">
+    <a routerLink="/" class="admin-topbar-btn">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <div class="admin-topbar-info">
+      <span class="admin-topbar-titulo">Administração</span>
+      <small class="admin-topbar-email">{{ email }}</small>
+    </div>
+    <button class="admin-topbar-btn" (click)="sair()" title="Sair">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </header>
+
+  <nav class="admin-tabs">
+    <a class="admin-tab" routerLink="/admin/receitas" routerLinkActive="active">
+      <i class="fas fa-book-open"></i>
+      <span>Receitas</span>
+    </a>
+    @if (isAdmin) {
+      <a class="admin-tab" routerLink="/admin/ingredientes" routerLinkActive="active">
+        <i class="fas fa-cubes"></i>
+        <span>Ingredientes</span>
+      </a>
+      <a class="admin-tab" routerLink="/admin/ingrediente-grupos" routerLinkActive="active">
+        <i class="fas fa-layer-group"></i>
+        <span>Grupos</span>
+      </a>
+      <a class="admin-tab" routerLink="/admin/usuarios" routerLinkActive="active">
+        <i class="fas fa-users"></i>
+        <span>Usuários</span>
+      </a>
+    }
+  </nav>
+
+  <router-outlet />
+
+</div>
