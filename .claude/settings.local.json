@@ -32,7 +32,9 @@
       "PowerShell($resp = Invoke-RestMethod -Uri \"https://pub.dev/api/packages/shared_preferences_android\" -ErrorAction SilentlyContinue; if \\($resp\\) { $resp.versions | Select-Object -Last 5 | ForEach-Object { $_.version } } else { \"Could not reach pub.dev\" })",
       "Bash(grep -rn \"toStringAsFixed\\\\|NumberFormat\\\\|R\\\\\\\\\\\\$\\\\|preco\\\\|pesoG\\\\|percentual\\\\|\\\\\\\\.text =\" lib/ --include=\"*.dart\")",
       "Bash(git ls-files *)",
-      "Bash(grep -E \"\\\\.\\(iml|gradle\\)$|build/|\\\\.dart_tool|\\\\.flutter-plugins|local\\\\.properties|key\\\\.properties\")"
+      "Bash(grep -E \"\\\\.\\(iml|gradle\\)$|build/|\\\\.dart_tool|\\\\.flutter-plugins|local\\\\.properties|key\\\\.properties\")",
+      "Bash(cat android/app/build.gradle.kts)",
+      "Bash(cat android/app/build.gradle)"
     ]
   }
 }
