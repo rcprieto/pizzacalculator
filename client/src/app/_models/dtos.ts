@@ -11,7 +11,10 @@ export interface LoginDto {
 
 export interface RegisterDto {
   email: string;
-  password: string;
+}
+
+export interface EsqueciSenhaDto {
+  email: string;
 }
 
 export interface UsuarioDto {

@@ -85,6 +85,20 @@ class AccountService extends ChangeNotifier {
     }
   }
 
+  Future<String?> esqueciSenha(EsqueciSenhaDto model) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${baseUrl}account/esqueci-senha'),
+        headers: buildHeaders(null),
+        body: json.encode(model.toJson()),
+      );
+      if (response.statusCode == 200) return null;
+      return 'Erro ao processar solicitação';
+    } catch (e) {
+      return 'Erro de conexão';
+    }
+  }
+
   Future<String?> excluirUsuario(String id) async {
     try {
       final response = await http.delete(

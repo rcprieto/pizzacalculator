@@ -16,7 +16,6 @@ export class UsuarioListaComponent implements OnInit {
   usuarios: UsuarioDto[] = [];
   carregando = false;
   novoEmail = '';
-  novaSenha = '';
   salvando = false;
   mostrarFormulario = false;
   erro = '';
@@ -36,14 +35,13 @@ export class UsuarioListaComponent implements OnInit {
   }
 
   salvar() {
-    if (!this.novoEmail || !this.novaSenha) return;
+    if (!this.novoEmail) return;
     this.salvando = true;
     this.erro = '';
-    this.accountService.registrar({ email: this.novoEmail, password: this.novaSenha }).subscribe({
+    this.accountService.registrar({ email: this.novoEmail }).subscribe({
       next: usuario => {
         this.usuarios = [...this.usuarios, usuario];
         this.novoEmail = '';
-        this.novaSenha = '';
         this.mostrarFormulario = false;
         this.salvando = false;
       },

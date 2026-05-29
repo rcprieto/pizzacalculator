@@ -20,10 +20,10 @@
       <input type="email" class="admin-form-input" placeholder="E-mail"
              [(ngModel)]="novoEmail" />
     </div>
-    <div class="admin-form-row">
-      <input type="password" class="admin-form-input" placeholder="Senha"
-             [(ngModel)]="novaSenha" />
-    </div>
+    <p class="admin-form-info">
+      <i class="fas fa-info-circle"></i>
+      Uma senha forte será gerada e enviada para o e-mail cadastrado.
+    </p>
     <div class="admin-form-actions">
       <button class="admin-btn admin-btn--cancel" (click)="mostrarFormulario = false">Cancelar</button>
       <button class="admin-btn admin-btn--save" (click)="salvar()" [disabled]="salvando">

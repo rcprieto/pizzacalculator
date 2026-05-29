@@ -16,7 +16,6 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
   bool _carregando = false;
   bool _mostrarFormulario = false;
   final _emailCtrl = TextEditingController();
-  final _senhaCtrl = TextEditingController();
   bool _salvando = false;
 
   @override
@@ -28,7 +27,6 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
   @override
   void dispose() {
     _emailCtrl.dispose();
-    _senhaCtrl.dispose();
     super.dispose();
   }
 
@@ -40,11 +38,10 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
 
   Future<void> _salvar() async {
     final email = _emailCtrl.text.trim();
-    final senha = _senhaCtrl.text.trim();
-    if (email.isEmpty || senha.isEmpty) return;
+    if (email.isEmpty) return;
     setState(() => _salvando = true);
     final erro = await context.read<AccountService>().registrar(
-      RegisterDto(email: email, password: senha),
+      RegisterDto(email: email),
     );
     if (!mounted) return;
     setState(() => _salvando = false);
@@ -54,7 +51,6 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
       );
     } else {
       _emailCtrl.clear();
-      _senhaCtrl.clear();
       setState(() => _mostrarFormulario = false);
       await _carregar();
     }
@@ -103,7 +99,6 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Toolbar
         Container(
           color: AppColors.cardBg,
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -116,26 +111,20 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
                     border: Border.all(color: AppColors.border, width: 1.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 10),
-                  child: Row(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: const Row(
                     children: [
-                      const Icon(Icons.people,
-                          color: AppColors.textMuted, size: 16),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Usuários do sistema',
-                        style: const TextStyle(
-                            color: AppColors.textSecondary, fontSize: 13),
-                      ),
+                      Icon(Icons.people, color: AppColors.textMuted, size: 16),
+                      SizedBox(width: 8),
+                      Text('Usuários do sistema',
+                          style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                 ),
               ),
               const SizedBox(width: 8),
               GestureDetector(
-                onTap: () =>
-                    setState(() => _mostrarFormulario = !_mostrarFormulario),
+                onTap: () => setState(() => _mostrarFormulario = !_mostrarFormulario),
                 child: Container(
                   width: 40,
                   height: 40,
@@ -154,13 +143,10 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
           ),
         ),
         Container(height: 1, color: AppColors.borderLight),
-        // Formulário inline
         if (_mostrarFormulario) _buildFormulario(),
-        // Lista
         Expanded(
           child: _carregando
-              ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.accent))
+              ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
               : _usuarios.isEmpty
                   ? const Center(
                       child: Text('Nenhum usuário encontrado',
@@ -201,7 +187,18 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
           const SizedBox(height: 10),
           _campo(_emailCtrl, 'E-mail', TextInputType.emailAddress),
           const SizedBox(height: 8),
-          _campo(_senhaCtrl, 'Senha', TextInputType.visiblePassword, obscure: true),
+          Row(
+            children: [
+              const Icon(Icons.info_outline, size: 13, color: AppColors.textMuted),
+              const SizedBox(width: 5),
+              const Expanded(
+                child: Text(
+                  'Uma senha forte será gerada e enviada para o e-mail.',
+                  style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -215,8 +212,7 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
               GestureDetector(
                 onTap: _salvando ? null : _salvar,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
                     gradient: AppColors.barGradient,
                     borderRadius: BorderRadius.circular(10),
@@ -225,13 +221,10 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
                       ? const SizedBox(
                           width: 16,
                           height: 16,
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2))
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : const Text('Salvar',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14)),
+                              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
                 ),
               ),
             ],
@@ -242,21 +235,17 @@ class _UsuarioListaScreenState extends State<UsuarioListaScreen> {
     );
   }
 
-  Widget _campo(TextEditingController ctrl, String hint, TextInputType tipo,
-      {bool obscure = false}) {
+  Widget _campo(TextEditingController ctrl, String hint, TextInputType tipo) {
     return TextField(
       controller: ctrl,
       keyboardType: tipo,
-      obscureText: obscure,
       style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            const TextStyle(color: AppColors.textMuted, fontSize: 14),
+        hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 14),
         filled: true,
         fillColor: AppColors.inputBg,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.border, width: 1.5),
@@ -299,8 +288,7 @@ class _UsuarioItem extends StatelessWidget {
               color: const Color(0xFFf0fff4),
               borderRadius: BorderRadius.circular(11),
             ),
-            child: const Icon(Icons.person,
-                color: Color(0xFF27ae60), size: 18),
+            child: const Icon(Icons.person, color: Color(0xFF27ae60), size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -310,32 +298,27 @@ class _UsuarioItem extends StatelessWidget {
                 Text(
                   usuario.email,
                   style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                      color: AppColors.textPrimary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 1),
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
                       decoration: BoxDecoration(
                         color: AppColors.iconGrupoBg,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        usuario.role,
-                        style: const TextStyle(
-                            color: AppColors.iconGrupoFg, fontSize: 11),
-                      ),
+                      child: Text(usuario.role,
+                          style: const TextStyle(
+                              color: AppColors.iconGrupoFg, fontSize: 11)),
                     ),
                     if (ehEu) ...[
                       const SizedBox(width: 6),
                       const Text('(você)',
-                          style: TextStyle(
-                              color: AppColors.textMuted, fontSize: 11)),
+                          style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
                     ],
                   ],
                 ),

@@ -39,7 +39,11 @@
       "Bash(Sort-Object)",
       "Read(//c/Desenvolupament/CasaAngular/PizzaCalculator/API.Data/Migrations/**)",
       "PowerShell(cd \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API\"; dotnet build 2>&1 | Where-Object { $_ -match \"error|Error|Build succeeded|Build FAILED\" })",
-      "PowerShell(Get-ChildItem \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Directory | ForEach-Object { $_.Name })"
+      "PowerShell(Get-ChildItem \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Directory | ForEach-Object { $_.Name })",
+      "Read(//c/Program Files/**)",
+      "Bash(flutter build *)",
+      "Bash(./android/gradlew --stop)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\bin\\\\keytool.exe\" -list -keystore \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\lib\\\\security\\\\cacerts\" -storepass \"changeit\" -alias \"avast-webshield\" 2>&1)"
     ]
   }
 }

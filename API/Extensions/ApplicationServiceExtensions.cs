@@ -1,5 +1,6 @@
 using API.Data.Context;
 using API.Data.Repositories;
+using API.Domain.Auxiliar;
 using API.Domain.Interfaces.Repositories;
 using API.Domain.Interfaces.Services;
 using API.Domain.Services;
@@ -12,6 +13,10 @@ public static class ApplicationServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
+        var emailSettings = config.GetSection("EmailSettings").Get<EmailSettings>() ?? new EmailSettings();
+        services.AddSingleton(emailSettings);
+        services.AddScoped<IEmailService, API.Services.EmailService>();
+
         services.AddDbContext<PizzaCalculatorDbContext>(options => options
             .UseMySql(config.GetConnectionString("DbConnectionString"),
             new MySqlServerVersion(new Version(8, 0, 19)),

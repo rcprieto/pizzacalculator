@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { map, take } from 'rxjs';
-import { LoginDto, RegisterDto, UserDto, UsuarioDto } from '../_models/dtos';
+import { EsqueciSenhaDto, LoginDto, RegisterDto, UserDto, UsuarioDto } from '../_models/dtos';
 import { environment } from '../../_environment/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -43,5 +43,9 @@ export class AccountService {
 
   excluirUsuario(id: string) {
     return this.http.delete(`${this.baseUrl}/account/${id}`).pipe(take(1));
+  }
+
+  esqueciSenha(model: EsqueciSenhaDto) {
+    return this.http.post(`${this.baseUrl}/account/esqueci-senha`, model).pipe(take(1));
   }
 }

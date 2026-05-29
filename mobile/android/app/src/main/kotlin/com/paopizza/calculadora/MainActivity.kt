@@ -1,4 +1,4 @@
-package com.citapps.pizza_calculator
+package com.paopizza.calculadora
 
 import io.flutter.embedding.android.FlutterActivity
 

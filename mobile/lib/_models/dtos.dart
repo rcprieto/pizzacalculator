@@ -23,11 +23,18 @@ class LoginDto {
 
 class RegisterDto {
   final String email;
-  final String password;
 
-  RegisterDto({required this.email, required this.password});
+  RegisterDto({required this.email});
 
-  Map<String, dynamic> toJson() => {'email': email, 'password': password};
+  Map<String, dynamic> toJson() => {'email': email};
+}
+
+class EsqueciSenhaDto {
+  final String email;
+
+  EsqueciSenhaDto({required this.email});
+
+  Map<String, dynamic> toJson() => {'email': email};
 }
 
 class UsuarioDto {

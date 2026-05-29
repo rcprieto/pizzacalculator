@@ -572,3 +572,5 @@ API/appsettings.Development.json
 /client/ssl/localhost-key.pem
 
 /API/wwwroot
+API/appsettings.json
+API/appsettings.json

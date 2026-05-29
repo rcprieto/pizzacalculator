@@ -20,8 +20,16 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
+  esqueciForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
+
   erro = '';
   carregando = false;
+  mostraEsqueci = false;
+  esqueciEnviado = false;
+  esqueciCarregando = false;
+  esqueciErro = '';
 
   entrar() {
     if (this.form.invalid) return;
@@ -36,5 +44,29 @@ export class LoginComponent {
     });
   }
 
+  abrirEsqueci() {
+    this.mostraEsqueci = true;
+    this.esqueciEnviado = false;
+    this.esqueciErro = '';
+    this.esqueciForm.patchValue({ email: this.form.value.email ?? '' });
+  }
+
+  enviarEsqueci() {
+    if (this.esqueciForm.invalid) return;
+    this.esqueciCarregando = true;
+    this.esqueciErro = '';
+    this.accountService.esqueciSenha(this.esqueciForm.value as any).subscribe({
+      next: () => {
+        this.esqueciEnviado = true;
+        this.esqueciCarregando = false;
+      },
+      error: () => {
+        this.esqueciErro = 'Erro ao enviar. Verifique o e-mail e tente novamente.';
+        this.esqueciCarregando = false;
+      },
+    });
+  }
+
   get f() { return this.form.controls; }
+  get fe() { return this.esqueciForm.controls; }
 }

@@ -5,6 +5,7 @@ import '../../_helpers/credentials_helper.dart';
 import '../../_models/dtos.dart';
 import '../../_services/account_service.dart';
 import '../../_theme/app_colors.dart';
+import 'esqueci_senha_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -57,6 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     await _perguntarSalvarCredenciais(email, senha);
     if (mounted) context.go('/admin/receitas');
+  }
+
+  void _abrirEsqueciSenha() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EsqueciSenhaScreen(emailInicial: _emailCtrl.text.trim()),
+      ),
+    );
   }
 
   Future<void> _perguntarSalvarCredenciais(String email, String senha) async {
@@ -208,7 +217,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? 'Campo obrigatório'
                                   : null,
                     ),
-                    const SizedBox(height: 24),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _abrirEsqueciSenha,
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 0),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Text(
+                          'Esqueci minha senha',
+                          style: TextStyle(
+                              color: AppColors.accent,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     SizedBox(
                       height: 50,
                       child: ElevatedButton(
