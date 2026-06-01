@@ -41,7 +41,7 @@ class AccountService extends ChangeNotifier {
       }
       return 'Usuário ou senha inválidos';
     } catch (e) {
-      return 'Erro de conexão com o servidor';
+      return 'Erro de conexão: ${e.runtimeType} - $e';
     } finally {
       _carregando = false;
       notifyListeners();
@@ -94,6 +94,21 @@ class AccountService extends ChangeNotifier {
       );
       if (response.statusCode == 200) return null;
       return 'Erro ao processar solicitação';
+    } catch (e) {
+      return 'Erro de conexão';
+    }
+  }
+
+  Future<String?> registrarPublico(RegisterDto model) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${baseUrl}account/registrar-publico'),
+        headers: buildHeaders(null),
+        body: json.encode(model.toJson()),
+      );
+      if (response.statusCode == 200) return null;
+      final body = response.body;
+      return body.isNotEmpty ? body.replaceAll('"', '') : 'Erro ao criar conta';
     } catch (e) {
       return 'Erro de conexão';
     }

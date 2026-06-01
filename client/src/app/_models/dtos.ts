@@ -30,6 +30,7 @@ export interface IngredienteDto {
   marca: string;
   preco: number;
   status: boolean;
+  userId?: string;
 }
 
 export interface ReceitaDto {
@@ -45,6 +46,7 @@ export interface IngredienteGrupoDto {
   nome: string;
   ordem: number;
   status: boolean;
+  userId?: string;
 }
 
 export interface ReceitaItemDto {

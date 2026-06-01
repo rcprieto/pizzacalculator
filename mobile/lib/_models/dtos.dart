@@ -64,6 +64,7 @@ class IngredienteDto {
   String marca;
   double preco;
   bool status;
+  String? userId;
 
   IngredienteDto({
     this.id = 0,
@@ -71,6 +72,7 @@ class IngredienteDto {
     this.marca = '',
     this.preco = 0,
     this.status = true,
+    this.userId,
   });
 
   factory IngredienteDto.fromJson(Map<String, dynamic> json) => IngredienteDto(
@@ -79,6 +81,7 @@ class IngredienteDto {
     marca: json['marca'] ?? '',
     preco: (json['preco'] ?? 0).toDouble(),
     status: json['status'] ?? true,
+    userId: json['userId'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -87,6 +90,7 @@ class IngredienteDto {
     'marca': marca,
     'preco': preco,
     'status': status,
+    if (userId != null) 'userId': userId,
   };
 }
 
@@ -95,12 +99,14 @@ class IngredienteGrupoDto {
   String nome;
   int ordem;
   bool status;
+  String? userId;
 
   IngredienteGrupoDto({
     this.id = 0,
     this.nome = '',
     this.ordem = 0,
     this.status = true,
+    this.userId,
   });
 
   factory IngredienteGrupoDto.fromJson(Map<String, dynamic> json) =>
@@ -109,6 +115,7 @@ class IngredienteGrupoDto {
         nome: json['nome'] ?? '',
         ordem: json['ordem'] ?? 0,
         status: json['status'] ?? true,
+        userId: json['userId'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -116,6 +123,7 @@ class IngredienteGrupoDto {
     'nome': nome,
     'ordem': ordem,
     'status': status,
+    if (userId != null) 'userId': userId,
   };
 }
 

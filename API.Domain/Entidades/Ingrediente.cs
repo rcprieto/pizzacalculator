@@ -20,5 +20,10 @@ public class Ingrediente
     [Column("ing_status")]
     public bool Status { get; set; } = true;
 
+    [Column("ing_user_id")]
+    public string UserId { get; set; }
+
+    public AppUser User { get; set; }
+
     public ICollection<ReceitaItem> ReceitaItens { get; set; }
 }

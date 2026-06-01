@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../_services/account_service.dart';
 import '../../_theme/app_colors.dart';
 
@@ -117,6 +118,20 @@ class MenuScreen extends StatelessWidget {
                       ),
                     ),
                   ],
+                  const SizedBox(height: 32),
+                  TextButton(
+                    onPressed: () => launchUrl(
+                      Uri.parse('https://pizza.citapps.com.br/privacy'),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    child: const Text(
+                      'Política de Privacidade',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

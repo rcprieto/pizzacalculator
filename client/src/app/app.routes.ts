@@ -10,9 +10,13 @@ import { IngredienteListaComponent } from './_components/admin/ingrediente/lista
 import { IngredienteGrupoListaComponent } from './_components/admin/ingrediente-grupo/lista/ingrediente-grupo-lista.component';
 import { ReceitaListaComponent } from './_components/admin/receita/lista/receita-lista.component';
 import { UsuarioListaComponent } from './_components/admin/usuario/lista/usuario-lista.component';
+import { ExcluirContaComponent } from './excluir-conta/excluir-conta.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent },
+  { path: 'excluir-conta', component: ExcluirContaComponent },
+  { path: 'privacy', component: PrivacyComponent },
   { path: 'pizza', component: PizzaCalculatorComponent },
   { path: 'pao', component: PaoComponent },
   { path: 'login', component: LoginComponent },
@@ -23,8 +27,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'receitas', component: ReceitaListaComponent },
-      { path: 'ingredientes', component: IngredienteListaComponent, canActivate: [adminGuard] },
-      { path: 'ingrediente-grupos', component: IngredienteGrupoListaComponent, canActivate: [adminGuard] },
+      { path: 'ingredientes', component: IngredienteListaComponent },
+      { path: 'ingrediente-grupos', component: IngredienteGrupoListaComponent },
       { path: 'usuarios', component: UsuarioListaComponent, canActivate: [adminGuard] },
       { path: '', redirectTo: 'receitas', pathMatch: 'full' },
     ]

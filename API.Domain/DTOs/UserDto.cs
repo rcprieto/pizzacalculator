@@ -33,3 +33,10 @@ public class UsuarioDto
     public string Role { get; set; }
     public bool Status { get; set; }
 }
+
+public class ExcluirContaDto
+{
+    [EmailAddress]
+    public string Email { get; set; }
+    public string Password { get; set; }
+}

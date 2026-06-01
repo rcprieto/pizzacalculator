@@ -6,4 +6,5 @@ public class IngredienteGrupoDto
     public string Nome { get; set; }
     public int Ordem { get; set; }
     public bool Status { get; set; }
+    public string UserId { get; set; }
 }

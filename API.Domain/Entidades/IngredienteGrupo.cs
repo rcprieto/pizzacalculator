@@ -19,5 +19,10 @@ public class IngredienteGrupo
     [Column("ing_grupo_status")]
     public bool Status { get; set; } = true;
 
+    [Column("ing_grupo_user_id")]
+    public string UserId { get; set; }
+
+    public AppUser User { get; set; }
+
     public ICollection<ReceitaItem> ReceitaItens { get; set; }
 }

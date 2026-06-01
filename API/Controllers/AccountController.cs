@@ -1,3 +1,4 @@
+using API.Data.Context;
 using API.Domain.DTOs;
 using API.Domain.Entidades;
 using API.Domain.Interfaces.Services;
@@ -16,12 +17,14 @@ public class AccountController : ControllerBase
     private readonly UserManager<AppUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly IEmailService _emailService;
+    private readonly PizzaCalculatorDbContext _context;
 
-    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IEmailService emailService)
+    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IEmailService emailService, PizzaCalculatorDbContext context)
     {
         _userManager = userManager;
         _tokenService = tokenService;
         _emailService = emailService;
+        _context = context;
     }
 
     [HttpPost("login")]
@@ -99,6 +102,44 @@ public class AccountController : ControllerBase
         return Ok(resultado);
     }
 
+    [HttpPost("registrar-publico")]
+    [AllowAnonymous]
+    public async Task<ActionResult> RegistrarPublico(RegisterDto model)
+    {
+        if (await _userManager.Users.AnyAsync(u => u.Email == model.Email.ToLower()))
+            return BadRequest("Este e-mail já possui uma conta cadastrada.");
+
+        var senha = SenhaHelper.Gerar();
+        var user = new AppUser
+        {
+            UserName = model.Email.ToLower(),
+            Email = model.Email.ToLower(),
+            EmailConfirmed = true,
+            Status = true
+        };
+
+        var resultado = await _userManager.CreateAsync(user, senha);
+        if (!resultado.Succeeded)
+            return BadRequest("Não foi possível criar a conta. Verifique o e-mail e tente novamente.");
+
+        await _userManager.AddToRoleAsync(user, "User");
+
+        var corpo = $@"
+            <div style='font-family:sans-serif;max-width:480px;margin:0 auto'>
+              <h2 style='color:#3d200e'>🍕 Pizza Calculator</h2>
+              <p>Sua conta foi criada com sucesso! Use as credenciais abaixo para entrar no aplicativo:</p>
+              <p><strong>E-mail:</strong> {user.Email}</p>
+              <p><strong>Senha:</strong></p>
+              <p style='font-size:26px;font-weight:bold;letter-spacing:3px;color:#c07a0a;background:#fff8e7;padding:12px 20px;border-radius:8px;display:inline-block'>{senha}</p>
+              <p style='margin-top:16px'>Após o primeiro acesso, você pode solicitar a redefinição da senha pela opção <em>Esqueci minha senha</em> no aplicativo.</p>
+              <p style='color:#999;font-size:12px;margin-top:24px'>Se você não solicitou este cadastro, ignore este e-mail.</p>
+            </div>";
+
+        await _emailService.EnviarAsync(user.Email!, "Bem-vindo ao Pizza Calculator — suas credenciais de acesso", corpo);
+
+        return Ok();
+    }
+
     [HttpPost("registrar")]
     [Authorize(Policy = "RequireAdminRole")]
     public async Task<ActionResult<UsuarioDto>> Registrar(RegisterDto model)
@@ -154,6 +195,73 @@ public class AccountController : ControllerBase
 
         user.Status = false;
         await _userManager.UpdateAsync(user);
+        return NoContent();
+    }
+
+    [HttpPost("excluir-conta")]
+    [AllowAnonymous]
+    public async Task<ActionResult> ExcluirConta(ExcluirContaDto model)
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null || !user.Status)
+            return Unauthorized("Email ou senha inválidos");
+
+        var senhaCorreta = await _userManager.CheckPasswordAsync(user, model.Password);
+        if (!senhaCorreta)
+            return Unauthorized("Email ou senha inválidos");
+
+        // IDs dos ingredientes e grupos do usuário (para limpar referências externas)
+        var ingIds = await _context.Ingredientes
+            .Where(i => i.UserId == user.Id)
+            .Select(i => i.Id)
+            .ToListAsync();
+
+        var grupoIds = await _context.IngredienteGrupos
+            .Where(g => g.UserId == user.Id)
+            .Select(g => g.Id)
+            .ToListAsync();
+
+        // Remove ReceitaItens de qualquer receita que referenciem ingredientes do usuário
+        if (ingIds.Count > 0)
+        {
+            var itensReferenciados = await _context.ReceitaItens
+                .Where(ri => ingIds.Contains(ri.IngredienteId))
+                .ToListAsync();
+            _context.ReceitaItens.RemoveRange(itensReferenciados);
+        }
+
+        // Remove referência aos grupos do usuário em ReceitaItens de outras receitas
+        if (grupoIds.Count > 0)
+        {
+            var itensComGrupo = await _context.ReceitaItens
+                .Where(ri => ri.IngredienteGrupoId.HasValue && grupoIds.Contains(ri.IngredienteGrupoId.Value))
+                .ToListAsync();
+            foreach (var item in itensComGrupo) item.IngredienteGrupoId = null;
+        }
+
+        await _context.SaveChangesAsync();
+
+        // Remove as receitas do usuário (cascade deleta os itens restantes)
+        var receitas = await _context.Receitas.Where(r => r.UserId == user.Id).ToListAsync();
+        _context.Receitas.RemoveRange(receitas);
+
+        // Remove ingredientes e grupos do usuário (sem ReceitaItens referenciando)
+        if (ingIds.Count > 0)
+        {
+            var ingredientes = await _context.Ingredientes.Where(i => i.UserId == user.Id).ToListAsync();
+            _context.Ingredientes.RemoveRange(ingredientes);
+        }
+
+        if (grupoIds.Count > 0)
+        {
+            var grupos = await _context.IngredienteGrupos.Where(g => g.UserId == user.Id).ToListAsync();
+            _context.IngredienteGrupos.RemoveRange(grupos);
+        }
+
+        await _context.SaveChangesAsync();
+
+        await _userManager.DeleteAsync(user);
+
         return NoContent();
     }
 }

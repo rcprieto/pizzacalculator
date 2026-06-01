@@ -13,7 +13,10 @@ GoRouter buildRouter(AccountService accountService) {
       final logado = accountService.estaLogado;
       final rotaProtegida = state.matchedLocation.startsWith('/admin') ||
           state.matchedLocation.startsWith('/receitas');
-      if (rotaProtegida && !logado) return '/login';
+      if (rotaProtegida && !logado) {
+        final from = Uri.encodeComponent(state.matchedLocation);
+        return '/login?from=$from';
+      }
       return null;
     },
     refreshListenable: accountService,
@@ -24,7 +27,8 @@ GoRouter buildRouter(AccountService accountService) {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) =>
+            LoginScreen(rotaOrigem: state.uri.queryParameters['from']),
       ),
       GoRoute(
         path: '/receitas',

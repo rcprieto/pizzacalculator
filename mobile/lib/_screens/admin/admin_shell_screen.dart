@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../_services/account_service.dart';
 import '../../_theme/app_colors.dart';
 import 'ingrediente/ingrediente_lista_screen.dart';
@@ -29,6 +30,8 @@ class _AdminShellScreenState extends State<AdminShellScreen>
 
   static const _abasUser = [
     (icon: Icons.bakery_dining, label: 'Receitas'),
+    (icon: Icons.egg_alt, label: 'Ingredientes'),
+    (icon: Icons.layers, label: 'Grupos'),
   ];
 
   @override
@@ -99,6 +102,14 @@ class _AdminShellScreenState extends State<AdminShellScreen>
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.no_accounts_outlined, color: Colors.white54),
+            tooltip: 'Desativar minha conta',
+            onPressed: () => launchUrl(
+              Uri.parse('https://pizza.citapps.com.br/excluir-conta'),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout, color: Colors.white70),
             tooltip: 'Sair',
             onPressed: () async {
@@ -131,11 +142,9 @@ class _AdminShellScreenState extends State<AdminShellScreen>
         controller: _tabController,
         children: [
           const ReceitaAdminListaScreen(),
-          if (isAdmin) ...[
-            const IngredienteListaScreen(),
-            const IngredienteGrupoListaScreen(),
-            const UsuarioListaScreen(),
-          ],
+          const IngredienteListaScreen(),
+          const IngredienteGrupoListaScreen(),
+          if (isAdmin) const UsuarioListaScreen(),
         ],
       ),
     );

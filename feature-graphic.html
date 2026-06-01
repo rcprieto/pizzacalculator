@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1024px; height: 500px; overflow: hidden; background: #1c0f0a; }
+
+    .banner {
+      width: 1024px;
+      height: 500px;
+      background: linear-gradient(135deg, #1c0f0a 0%, #3d200e 55%, #6b3a1f 100%);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* círculos decorativos de fundo */
+    .deco {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .deco-1 {
+      width: 520px; height: 520px;
+      border: 1px solid rgba(192, 122, 10, 0.12);
+      top: -140px; left: -120px;
+    }
+    .deco-2 {
+      width: 320px; height: 320px;
+      border: 1px solid rgba(192, 122, 10, 0.09);
+      top: -60px; left: -20px;
+    }
+    .deco-3 {
+      width: 280px; height: 280px;
+      background: rgba(192, 122, 10, 0.06);
+      bottom: -80px; right: 140px;
+    }
+    .deco-4 {
+      width: 160px; height: 160px;
+      border: 1px solid rgba(255,255,255, 0.04);
+      top: 30px; right: 60px;
+    }
+
+    /* lado esquerdo — ícone */
+    .left {
+      width: 380px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-left: 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .icon-ring {
+      width: 200px;
+      height: 200px;
+      border-radius: 52px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .icon-ring span {
+      font-size: 96px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    /* lado direito — textos */
+    .right {
+      flex: 1;
+      padding: 0 64px 0 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(192, 122, 10, 0.8);
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-size: 70px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.0;
+      letter-spacing: -2px;
+    }
+
+    .title span {
+      color: #c07a0a;
+    }
+
+    .divider {
+      width: 52px;
+      height: 3px;
+      background: linear-gradient(90deg, #c07a0a, rgba(192, 122, 10, 0.3));
+      border-radius: 2px;
+      margin: 20px 0;
+    }
+
+    .tagline {
+      font-size: 21px;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.1px;
+    }
+
+    .pills {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(192, 122, 10, 0.35);
+      background: rgba(192, 122, 10, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <!-- decorativos -->
+    <div class="deco deco-1"></div>
+    <div class="deco deco-2"></div>
+    <div class="deco deco-3"></div>
+    <div class="deco deco-4"></div>
+
+    <!-- ícone -->
+    <div class="left">
+      <div class="icon-ring">
+        <span>🍕</span>
+      </div>
+    </div>
+
+    <!-- textos -->
+    <div class="right">
+      <div class="label">Calculadora Padaria</div>
+      <div class="title">Pizza<br><span>Calculator</span></div>
+      <div class="divider"></div>
+      <div class="tagline">Calculadora de massa e<br>receitas artesanais</div>
+      <div class="pills">
+        <div class="pill">🧂 Ingredientes</div>
+        <div class="pill">📖 Receitas</div>
+        <div class="pill">📐 Calculadora</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

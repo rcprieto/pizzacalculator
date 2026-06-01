@@ -30,7 +30,7 @@ public static class DbInitializer
         Status = true
       };
 
-      var resultado = await userManager.CreateAsync(admin, "Jdjsknk#fhais@jd23");
+      var resultado = await userManager.CreateAsync(admin, "a5RCAU!!Xq7f");
       if (!resultado.Succeeded)
         throw new Exception("Falha ao criar usuário admin: " + string.Join(", ", resultado.Errors.Select(e => e.Description)));
 

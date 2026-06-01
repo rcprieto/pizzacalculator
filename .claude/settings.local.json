@@ -43,7 +43,13 @@
       "Read(//c/Program Files/**)",
       "Bash(flutter build *)",
       "Bash(./android/gradlew --stop)",
-      "PowerShell(& \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\bin\\\\keytool.exe\" -list -keystore \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\lib\\\\security\\\\cacerts\" -storepass \"changeit\" -alias \"avast-webshield\" 2>&1)"
+      "PowerShell(& \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\bin\\\\keytool.exe\" -list -keystore \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\lib\\\\security\\\\cacerts\" -storepass \"changeit\" -alias \"avast-webshield\" 2>&1)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Directory)",
+      "Bash(dir \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\mobile\\\\lib\\\\_screens\\\\admin\\\\ingrediente_grupo\\\\\" -File)",
+      "Read(//c/Desenvolvimen\n\nto/CasaAngular/PizzaCalculator/API.Domain/Helpers/**)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\\\\API.Domain\" -Directory)",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Desenvolvimento\\\\CasaAngular\\\\PizzaCalculator\" -Directory | Where-Object {$_.Name -notmatch '^\\(\\\\.|node_modules|obj\\)'} | Select-Object FullName)"
     ]
   }
 }

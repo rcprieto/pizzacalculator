@@ -1,0 +1,105 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card shadow-sm" style="width: 400px;">
+    <div class="card-body p-4">
+
+      <!-- ── Sucesso ── -->
+      @if (etapa === 'sucesso') {
+        <div class="text-center py-3">
+          <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+          <h5>Conta excluída</h5>
+          <p class="text-muted">
+            Seus dados foram removidos permanentemente do Pizza Calculator.
+          </p>
+        </div>
+      }
+
+      <!-- ── Confirmação ── -->
+      @else if (etapa === 'confirmando') {
+        <div class="text-center mb-4">
+          <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+          <h5 class="mb-1">Confirmar exclusão</h5>
+          <small class="text-muted">Esta ação é permanente e não pode ser desfeita</small>
+        </div>
+
+        <div class="alert alert-danger py-2 mb-3 small">
+          <strong>Serão excluídos permanentemente:</strong>
+          <ul class="mb-0 mt-1">
+            <li>Sua conta e dados de acesso</li>
+            <li>Todas as suas receitas</li>
+            <li>Todos os seus ingredientes e grupos criados</li>
+          </ul>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">
+            Digite <strong>EXCLUIR</strong> para confirmar:
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [formControl]="f['confirmacao']"
+            placeholder="EXCLUIR"
+            autocomplete="off" />
+        </div>
+
+        @if (erro) {
+          <div class="alert alert-danger py-2 mb-3">{{ erro }}</div>
+        }
+
+        <div class="d-grid gap-2">
+          <button
+            class="btn btn-danger"
+            [disabled]="confirmacaoInvalida || carregando"
+            (click)="confirmarExclusao()">
+            @if (carregando) { <span class="spinner-border spinner-border-sm me-2"></span> }
+            Excluir minha conta permanentemente
+          </button>
+          <button class="btn btn-outline-secondary" (click)="voltar()" [disabled]="carregando">
+            Cancelar
+          </button>
+        </div>
+      }
+
+      <!-- ── Formulário ── -->
+      @else {
+        <div class="text-center mb-4">
+          <i class="fas fa-user-times fa-2x text-danger mb-2"></i>
+          <h5 class="mb-1">Excluir minha conta</h5>
+          <small class="text-muted">Informe suas credenciais para continuar</small>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="avancarConfirmacao()">
+          <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input type="email" class="form-control" formControlName="email" autocomplete="email"
+              [class.is-invalid]="f['email'].touched && f['email'].invalid" />
+            @if (f['email'].touched && f['email'].errors?.['required']) {
+              <div class="invalid-feedback">E-mail obrigatório.</div>
+            }
+            @if (f['email'].touched && f['email'].errors?.['email']) {
+              <div class="invalid-feedback">E-mail inválido.</div>
+            }
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Senha</label>
+            <input type="password" class="form-control" formControlName="password" autocomplete="current-password"
+              [class.is-invalid]="f['password'].touched && f['password'].invalid" />
+            @if (f['password'].touched && f['password'].errors?.['required']) {
+              <div class="invalid-feedback">Senha obrigatória.</div>
+            }
+          </div>
+
+          @if (erro) {
+            <div class="alert alert-danger py-2 mb-3">{{ erro }}</div>
+          }
+
+          <button type="submit" class="btn btn-danger w-100">
+            Continuar
+          </button>
+        </form>
+      }
+
+    </div>
+  </div>
+</div>

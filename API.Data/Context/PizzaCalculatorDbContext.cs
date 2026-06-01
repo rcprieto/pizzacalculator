@@ -63,5 +63,21 @@ public class PizzaCalculatorDbContext : IdentityDbContext<AppUser, IdentityRole,
             .HasForeignKey(r => r.UserId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // AppUser (1) -> Ingrediente (N)
+        modelBuilder.Entity<AppUser>()
+            .HasMany(u => u.Ingredientes)
+            .WithOne(i => i.User)
+            .HasForeignKey(i => i.UserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // AppUser (1) -> IngredienteGrupo (N)
+        modelBuilder.Entity<AppUser>()
+            .HasMany(u => u.IngredienteGrupos)
+            .WithOne(g => g.User)
+            .HasForeignKey(g => g.UserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

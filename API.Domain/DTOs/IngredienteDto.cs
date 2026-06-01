@@ -7,4 +7,5 @@ public class IngredienteDto
     public string Marca { get; set; }
     public decimal Preco { get; set; }
     public bool Status { get; set; }
+    public string UserId { get; set; }
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../_helpers/biometric_helper.dart';
 import '../../_helpers/credentials_helper.dart';
 import '../../_models/dtos.dart';
 import '../../_services/account_service.dart';
 import '../../_theme/app_colors.dart';
+import 'cadastro_screen.dart';
 import 'esqueci_senha_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String? rotaOrigem;
+  const LoginScreen({super.key, this.rotaOrigem});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -19,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _senhaCtrl = TextEditingController();
   bool _verSenha = false;
+  bool _mostrarBiometria = false;
 
   @override
   void initState() {
@@ -28,12 +32,45 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _carregarCredenciais() async {
     final credenciais = await carregarCredenciais();
-    if (credenciais != null && mounted) {
+    if (!mounted) return;
+    if (credenciais != null) {
       setState(() {
         _emailCtrl.text = credenciais.email;
         _senhaCtrl.text = credenciais.senha;
       });
+      final biometriaAtiva = await getBiometriaAtiva();
+      final disponivel = await biometriaDisponivel();
+      if (biometriaAtiva == true && disponivel && mounted) {
+        setState(() => _mostrarBiometria = true);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) _entrarComBiometria(credenciais.email, credenciais.senha);
+        });
+      }
     }
+  }
+
+  Future<void> _entrarComBiometria(String email, String senha) async {
+    final erro = await autenticarBiometria();
+    if (!mounted) return;
+    if (erro != null) {
+      // Usuário cancelou (null silencioso) ou erro real — mostra só se for erro real
+      if (!erro.contains('reconhecida')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(erro), backgroundColor: AppColors.deleteFg),
+        );
+      }
+      return;
+    }
+    final service = context.read<AccountService>();
+    final erroLogin = await service.login(LoginDto(email: email, password: senha));
+    if (!mounted) return;
+    if (erroLogin != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(erroLogin), backgroundColor: AppColors.deleteFg),
+      );
+      return;
+    }
+    context.go(widget.rotaOrigem ?? '/admin/receitas');
   }
 
   @override
@@ -57,7 +94,51 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     await _perguntarSalvarCredenciais(email, senha);
-    if (mounted) context.go('/admin/receitas');
+    await _perguntarBiometria(email, senha);
+    if (mounted) context.go(widget.rotaOrigem ?? '/admin/receitas');
+  }
+
+  Future<void> _perguntarBiometria(String email, String senha) async {
+    if (!await biometriaDisponivel()) return;
+    if (await carregarCredenciais() == null) return;
+    if (await getBiometriaAtiva() != null) return; // já configurado
+    if (!mounted) return;
+
+    final ativar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.fingerprint, color: AppColors.accent, size: 22),
+            SizedBox(width: 8),
+            Text(
+              'Ativar biometria',
+              style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Deseja usar digital ou reconhecimento facial para entrar nas próximas vezes?',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Não', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Ativar',
+              style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+    await setBiometriaAtiva(ativar ?? false);
   }
 
   void _abrirEsqueciSenha() {
@@ -268,7 +349,60 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    if (_mostrarBiometria) ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 50,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _entrarComBiometria(
+                            _emailCtrl.text.trim(),
+                            _senhaCtrl.text,
+                          ),
+                          icon: const Icon(Icons.fingerprint, size: 22),
+                          label: const Text('Entrar com biometria'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.accent,
+                            side: const BorderSide(color: AppColors.accent),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Não tem conta?',
+                          style: TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 13,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const CadastroScreen(),
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text(
+                            'Criar conta',
+                            style: TextStyle(
+                              color: AppColors.accent,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     TextButton(
                       onPressed: () => context.go('/'),
                       child: const Text(
