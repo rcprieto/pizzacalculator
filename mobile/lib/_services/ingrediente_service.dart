@@ -90,9 +90,11 @@ class IngredienteService extends ChangeNotifier {
         notifyListeners();
         return null;
       }
-      return 'Erro ao atualizar ingrediente';
+      if (response.statusCode == 403) return 'Sem permissão para editar este ingrediente';
+      final body = response.body.replaceAll('"', '');
+      return body.isNotEmpty ? body : 'Erro ao atualizar ingrediente (${response.statusCode})';
     } catch (e) {
-      return 'Erro de conexão';
+      return 'Erro de conexão: $e';
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '_router/app_router.dart';
 import '_services/account_service.dart';
@@ -8,6 +9,10 @@ import '_services/receita_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent),
+  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   final accountService = AccountService();
   await accountService.inicializar();
   runApp(PizzaCalculatorApp(accountService: accountService));
@@ -47,6 +52,10 @@ class PizzaCalculatorApp extends StatelessWidget {
               ),
             ),
             routerConfig: router,
+            builder: (context, child) => SafeArea(
+              top: false,
+              child: child!,
+            ),
           );
         },
       ),

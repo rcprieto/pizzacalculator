@@ -182,6 +182,8 @@ class ReceitaDetalheScreen extends StatefulWidget {
 class _ReceitaDetalheScreenState extends State<ReceitaDetalheScreen> {
   int _quantidade = 1;
   ReceitaDto? _detalhe;
+  double _margem = 30.0;
+  final _margemCtrl = TextEditingController(text: '30');
 
   @override
   void initState() {
@@ -191,6 +193,12 @@ class _ReceitaDetalheScreenState extends State<ReceitaDetalheScreen> {
       await service.retornaDetalhe(widget.receita.id);
       if (mounted) setState(() => _detalhe = service.receitaAtual);
     });
+  }
+
+  @override
+  void dispose() {
+    _margemCtrl.dispose();
+    super.dispose();
   }
 
   List<_GrupoReceita> get _grupos {
@@ -215,6 +223,16 @@ class _ReceitaDetalheScreenState extends State<ReceitaDetalheScreen> {
 
   double get _totalPeso =>
       (_detalhe?.itens ?? []).fold(0.0, (s, i) => s + i.pesoG) * _quantidade;
+
+  double get _totalCusto =>
+      (_detalhe?.itens ?? []).fold(0.0, (s, i) => s + (i.pesoG * i.ingredientePreco / 1000)) * _quantidade;
+
+  double get _precoSugerido => _totalCusto * (1 + _margem / 100);
+
+  double get _pesoFarinha =>
+      (_detalhe?.itens ?? [])
+          .where((i) => i.ingredienteId == 1)
+          .fold(0.0, (s, i) => s + i.pesoG);
 
   @override
   Widget build(BuildContext context) {
@@ -281,11 +299,22 @@ class _ReceitaDetalheScreenState extends State<ReceitaDetalheScreen> {
                       (grupo) => _GrupoCard(
                         grupo: grupo,
                         quantidade: _quantidade,
+                        pesoFarinha: _pesoFarinha,
                       ),
                     ),
                     if (_detalhe!.itens.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       _TotalCard(totalPeso: _totalPeso),
+                      const SizedBox(height: 8),
+                      _PrecoCard(
+                        totalCusto: _totalCusto,
+                        precoSugerido: _precoSugerido,
+                        margemCtrl: _margemCtrl,
+                        onMargemChanged: (v) {
+                          final val = double.tryParse(v.replaceAll(',', '.'));
+                          if (val != null) setState(() => _margem = val);
+                        },
+                      ),
                     ],
                     if (_detalhe!.modoPreparo.isNotEmpty) ...[
                       const SizedBox(height: 12),
@@ -386,8 +415,13 @@ class _GrupoReceita {
 class _GrupoCard extends StatelessWidget {
   final _GrupoReceita grupo;
   final int quantidade;
+  final double pesoFarinha;
 
-  const _GrupoCard({required this.grupo, required this.quantidade});
+  const _GrupoCard({
+    required this.grupo,
+    required this.quantidade,
+    required this.pesoFarinha,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -415,7 +449,11 @@ class _GrupoCard extends StatelessWidget {
           ),
         ],
         ...grupo.itens.map(
-          (item) => _IngredienteRow(item: item, quantidade: quantidade),
+          (item) => _IngredienteRow(
+            item: item,
+            quantidade: quantidade,
+            pesoFarinha: pesoFarinha,
+          ),
         ),
       ],
     );
@@ -425,8 +463,19 @@ class _GrupoCard extends StatelessWidget {
 class _IngredienteRow extends StatelessWidget {
   final ReceitaItemDto item;
   final int quantidade;
+  final double pesoFarinha;
 
-  const _IngredienteRow({required this.item, required this.quantidade});
+  const _IngredienteRow({
+    required this.item,
+    required this.quantidade,
+    required this.pesoFarinha,
+  });
+
+  String get _percentual {
+    if (pesoFarinha <= 0) return '';
+    final pct = item.ingredienteId == 1 ? 100.0 : (item.pesoG / pesoFarinha) * 100;
+    return '${formatarDecimal(pct, casas: 1)}%';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -482,13 +531,22 @@ class _IngredienteRow extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                '${formatarDecimal(item.percentual)}%',
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 11,
+              if (_percentual.isNotEmpty)
+                Text(
+                  _percentual,
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 11,
+                  ),
                 ),
-              ),
+              if (item.ingredientePreco > 0)
+                Text(
+                  formatarMoeda(item.pesoG * item.ingredientePreco / 1000 * quantidade),
+                  style: const TextStyle(
+                    color: AppColors.accent,
+                    fontSize: 11,
+                  ),
+                ),
             ],
           ),
         ],
@@ -528,6 +586,118 @@ class _TotalCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 15,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PrecoCard extends StatelessWidget {
+  final double totalCusto;
+  final double precoSugerido;
+  final TextEditingController margemCtrl;
+  final ValueChanged<String> onMargemChanged;
+
+  const _PrecoCard({
+    required this.totalCusto,
+    required this.precoSugerido,
+    required this.margemCtrl,
+    required this.onMargemChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Custo total',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              ),
+              Text(
+                formatarMoeda(totalCusto),
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Margem (%)',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              ),
+              SizedBox(
+                width: 72,
+                height: 34,
+                child: TextField(
+                  controller: margemCtrl,
+                  textAlign: TextAlign.center,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+                  decoration: InputDecoration(
+                    suffixText: '%',
+                    suffixStyle: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    filled: true,
+                    fillColor: AppColors.inputBg,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.accent),
+                    ),
+                  ),
+                  onChanged: onMargemChanged,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(height: 1, color: AppColors.borderLight),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Preço sugerido',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                formatarMoeda(precoSugerido),
+                style: const TextStyle(
+                  color: AppColors.accent,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),

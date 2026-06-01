@@ -102,6 +102,14 @@ class _ReceitaModalState extends State<ReceitaModal> {
     }
   }
 
+  // Percentual baker's: farinha = 100%, demais = pesoG / pesoFarinha * 100
+  String _percentualFarinha(ReceitaItemDto item, List<ReceitaItemDto> itens) {
+    final farinha = itens.where((i) => i.ingredienteId == 1).firstOrNull;
+    if (farinha == null || farinha.pesoG == 0) return '';
+    final pct = item.ingredienteId == 1 ? 100.0 : (item.pesoG / farinha.pesoG) * 100;
+    return '${formatarDecimal(pct, casas: 1)}%';
+  }
+
   void _abrirModalItem([ReceitaItemDto? item]) {
     if (_receitaSalva == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -365,7 +373,7 @@ class _ReceitaModalState extends State<ReceitaModal> {
                             ),
                           ),
                           SizedBox(
-                            width: 50,
+                            width: 55,
                             child: Text(
                               'PESO',
                               textAlign: TextAlign.right,
@@ -378,9 +386,9 @@ class _ReceitaModalState extends State<ReceitaModal> {
                             ),
                           ),
                           SizedBox(
-                            width: 44,
+                            width: 52,
                             child: Text(
-                              '%',
+                              '% FARINHA',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: AppColors.textMuted,
@@ -431,7 +439,7 @@ class _ReceitaModalState extends State<ReceitaModal> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 50,
+                                  width: 55,
                                   child: Text(
                                     '${formatarDecimal(item.pesoG, casas: 1)}g',
                                     textAlign: TextAlign.right,
@@ -442,9 +450,9 @@ class _ReceitaModalState extends State<ReceitaModal> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 44,
+                                  width: 52,
                                   child: Text(
-                                    '${formatarDecimal(item.percentual, casas: 2)}%',
+                                    _percentualFarinha(item, itens),
                                     textAlign: TextAlign.right,
                                     style: const TextStyle(
                                       color: AppColors.textMuted,
@@ -583,7 +591,6 @@ class _ReceitaItemModal extends StatefulWidget {
 
 class _ReceitaItemModalState extends State<_ReceitaItemModal> {
   final _pesoCtrl = TextEditingController();
-  final _percentualCtrl = TextEditingController();
   final _observacaoCtrl = TextEditingController();
   int? _ingredienteSelecionado;
   int? _grupoSelecionado;
@@ -595,7 +602,6 @@ class _ReceitaItemModalState extends State<_ReceitaItemModal> {
       _ingredienteSelecionado = widget.item!.ingredienteId;
       _grupoSelecionado = widget.item!.ingredienteGrupoId;
       _pesoCtrl.text = formatarDecimal(widget.item!.pesoG, casas: 1);
-      _percentualCtrl.text = formatarDecimal(widget.item!.percentual, casas: 2);
       _observacaoCtrl.text = widget.item!.observacao;
     }
   }
@@ -603,7 +609,6 @@ class _ReceitaItemModalState extends State<_ReceitaItemModal> {
   @override
   void dispose() {
     _pesoCtrl.dispose();
-    _percentualCtrl.dispose();
     _observacaoCtrl.dispose();
     super.dispose();
   }
@@ -628,7 +633,7 @@ class _ReceitaItemModalState extends State<_ReceitaItemModal> {
       ingredienteId: _ingredienteSelecionado!,
       ingredienteGrupoId: _grupoSelecionado,
       pesoG: parsarDecimal(_pesoCtrl.text),
-      percentual: parsarDecimal(_percentualCtrl.text),
+      percentual: 0,
       observacao: _observacaoCtrl.text.trim(),
     );
     final erro =
@@ -700,43 +705,123 @@ class _ReceitaItemModalState extends State<_ReceitaItemModal> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: AppColors.inputBg,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.border, width: 1.5),
+                Autocomplete<IngredienteDto>(
+                  displayStringForOption: (i) =>
+                      i.marca.isNotEmpty ? '${i.nome} — ${i.marca}' : i.nome,
+                  initialValue: TextEditingValue(
+                    text: _ingredienteSelecionado == null
+                        ? ''
+                        : ingredientes
+                              .where((i) => i.id == _ingredienteSelecionado)
+                              .map((i) => i.marca.isNotEmpty
+                                  ? '${i.nome} — ${i.marca}'
+                                  : i.nome)
+                              .firstOrNull ??
+                          '',
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                      value: _ingredienteSelecionado,
-                      hint: const Text(
-                        'Selecione o ingrediente',
-                        style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 14,
-                        ),
-                      ),
-                      dropdownColor: AppColors.cardBg,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
+                  optionsBuilder: (value) {
+                    if (value.text.isEmpty) return ingredientes;
+                    final busca = value.text.toLowerCase();
+                    return ingredientes.where((i) =>
+                        i.nome.toLowerCase().contains(busca) ||
+                        i.marca.toLowerCase().contains(busca));
+                  },
+                  onSelected: (i) =>
+                      setState(() => _ingredienteSelecionado = i.id),
+                  fieldViewBuilder: (ctx, ctrl, focusNode, _) => TextField(
+                    controller: ctrl,
+                    focusNode: focusNode,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 14,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Buscar ingrediente...',
+                      hintStyle: const TextStyle(
+                        color: AppColors.textMuted,
                         fontSize: 14,
                       ),
-                      isExpanded: true,
-                      items:
-                          ingredientes
-                              .map(
-                                (i) => DropdownMenuItem(
-                                  value: i.id,
-                                  child: Text(
-                                    i.nome,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppColors.textMuted,
+                        size: 18,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.inputBg,
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: AppColors.border,
+                          width: 1.5,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: AppColors.border,
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: AppColors.accent,
+                          width: 1.5,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                  optionsViewBuilder: (ctx, onSelected, options) => Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4,
+                      borderRadius: BorderRadius.circular(10),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 220),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: options.length,
+                          itemBuilder: (_, i) {
+                            final ing = options.elementAt(i);
+                            return InkWell(
+                              onTap: () => onSelected(ing),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
                                 ),
-                              )
-                              .toList(),
-                      onChanged:
-                          (v) => setState(() => _ingredienteSelecionado = v),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ing.nome,
+                                      style: const TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    if (ing.marca.isNotEmpty)
+                                      Text(
+                                        ing.marca,
+                                        style: const TextStyle(
+                                          color: AppColors.textMuted,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -787,13 +872,7 @@ class _ReceitaItemModalState extends State<_ReceitaItemModal> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(child: _campo(_pesoCtrl, 'Peso (g)')),
-                    const SizedBox(width: 10),
-                    Expanded(child: _campo(_percentualCtrl, 'Percentual (%)')),
-                  ],
-                ),
+                _campo(_pesoCtrl, 'Peso (g)'),
                 const SizedBox(height: 10),
                 _campo(_observacaoCtrl, 'Observação', numerico: false),
               ],

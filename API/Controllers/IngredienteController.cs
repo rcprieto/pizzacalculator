@@ -64,15 +64,24 @@ public class IngredienteController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<IngredienteDto>> Update([FromBody] IngredienteDto model)
     {
-        var item = await _repo.GetByIdAsync(model.Id);
-        if (item == null) return NotFound();
-        if (!IsAdmin && item.UserId != CurrentUserId) return Forbid();
-        var originalUserId = item.UserId;
-        _mapper.Map(model, item);
-        item.UserId = originalUserId;
-        _repo.Update(item);
-        if (await _repo.SaveChangesAsync() <= 0) return BadRequest("Erro ao atualizar ingrediente");
-        return Ok(model);
+        try
+        {
+            var item = await _repo.GetByIdAsync(model.Id);
+            if (item == null) return NotFound();
+            if (!IsAdmin && item.UserId != CurrentUserId) return Forbid();
+            var originalUserId = item.UserId;
+            item.Nome = model.Nome;
+            item.Marca = model.Marca;
+            item.Preco = model.Preco;
+            item.Status = model.Status;
+            var ok = _repo.Update(item);
+            if (!ok) return BadRequest("Falha ao salvar no banco de dados");
+            return Ok(model);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.InnerException?.Message ?? ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
@@ -83,7 +92,6 @@ public class IngredienteController : ControllerBase
         if (!IsAdmin && item.UserId != CurrentUserId) return Forbid();
         item.Status = false;
         _repo.Update(item);
-        if (await _repo.SaveChangesAsync() <= 0) return BadRequest("Erro ao excluir ingrediente");
         return NoContent();
     }
 }

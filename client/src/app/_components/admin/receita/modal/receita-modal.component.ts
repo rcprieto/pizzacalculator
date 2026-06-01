@@ -36,9 +36,10 @@ export class ReceitaModalComponent implements OnInit {
   ingredienteIdSelecionado = 0;
   ingredienteGrupoIdSelecionado: number | null = null;
   pesoGItem = 0;
-  percentualItem = 0;
   observacaoItem = '';
   editandoItemId: number | null = null;
+  buscaIngrediente = '';
+  mostrarListaIngrediente = false;
 
   get receita() {
     return this.service.receitaAtual();
@@ -54,12 +55,47 @@ export class ReceitaModalComponent implements OnInit {
     return this.receita?.itens?.reduce((acc, i) => acc + i.pesoG, 0) ?? 0;
   }
 
+  get ingredientesFiltrados() {
+    const busca = this.buscaIngrediente.toLowerCase().trim();
+    if (!busca) return this.ingredientes;
+    return this.ingredientes.filter(i =>
+      i.nome.toLowerCase().includes(busca) ||
+      (i.marca?.toLowerCase().includes(busca) ?? false)
+    );
+  }
+
+  selecionarIngrediente(ing: any) {
+    this.ingredienteIdSelecionado = ing.id;
+    this.buscaIngrediente = ing.nome + (ing.marca ? ` — ${ing.marca}` : '');
+    this.mostrarListaIngrediente = false;
+  }
+
+  fecharListaIngrediente() {
+    setTimeout(() => this.mostrarListaIngrediente = false, 150);
+  }
+
+  get pesoFarinha(): number {
+    return this.receita?.itens?.find(i => i.ingredienteId === 1)?.pesoG ?? 0;
+  }
+
+  calcularPercentual(item: ReceitaItemDto): number {
+    if (this.pesoFarinha <= 0) return 0;
+    return item.ingredienteId === 1 ? 100 : (item.pesoG / this.pesoFarinha) * 100;
+  }
+
   get totalPercentual(): number {
-    return this.receita?.itens?.reduce((acc, i) => acc + i.percentual, 0) ?? 0;
+    if (this.pesoFarinha <= 0) return 0;
+    return this.receita?.itens?.reduce((acc, i) => acc + this.calcularPercentual(i), 0) ?? 0;
   }
 
   get totalCusto(): number {
     return this.receita?.itens?.reduce((acc, i) => acc + (i.pesoG * i.ingredientePreco / 1000), 0) ?? 0;
+  }
+
+  margem = 30;
+
+  get precoSugerido(): number {
+    return this.totalCusto * (1 + this.margem / 100);
   }
 
   ngOnInit() {
@@ -108,7 +144,7 @@ export class ReceitaModalComponent implements OnInit {
       ingredienteNome: ing?.nome ?? '',
       ingredienteMarca: ing?.marca ?? '',
       pesoG: this.pesoGItem,
-      percentual: this.percentualItem,
+      percentual: 0,
       observacao: this.observacaoItem,
       ingredientePreco: ing?.preco ?? 0,
       ingredienteGrupoId: this.ingredienteGrupoIdSelecionado,
@@ -131,8 +167,9 @@ export class ReceitaModalComponent implements OnInit {
     this.ingredienteIdSelecionado = item.ingredienteId;
     this.ingredienteGrupoIdSelecionado = item.ingredienteGrupoId ?? null;
     this.pesoGItem = item.pesoG;
-    this.percentualItem = item.percentual;
     this.observacaoItem = item.observacao ?? '';
+    const ing = this.ingredientes.find(i => i.id === item.ingredienteId);
+    this.buscaIngrediente = ing ? (ing.nome + (ing.marca ? ` — ${ing.marca}` : '')) : item.ingredienteNome;
   }
 
   confirmarExclusaoItem(item: ReceitaItemDto) {
@@ -145,9 +182,10 @@ export class ReceitaModalComponent implements OnInit {
     this.ingredienteIdSelecionado = 0;
     this.ingredienteGrupoIdSelecionado = null;
     this.pesoGItem = 0;
-    this.percentualItem = 0;
     this.observacaoItem = '';
     this.editandoItemId = null;
+    this.buscaIngrediente = '';
+    this.mostrarListaIngrediente = false;
   }
 
   fechar() {

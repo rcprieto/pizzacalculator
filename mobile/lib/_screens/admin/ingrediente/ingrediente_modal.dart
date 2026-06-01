@@ -46,31 +46,15 @@ class _IngredienteModalState extends State<IngredienteModal> {
     if (!_formKey.currentState!.validate()) return;
     final token = context.read<AccountService>().usuarioAtual?.token ?? '';
     final service = context.read<IngredienteService>();
-    final model = IngredienteDto(
-      id: widget.item?.id ?? 0,
-      nome: _nomeCtrl.text.trim(),
-      marca: _marcaCtrl.text.trim(),
-      preco: parsarDecimal(_precoCtrl.text),
-      status: _status,
-    );
-    final erro =
-        widget.item != null
-            ? await service.atualizar(model, token)
-            : await service.cadastrar(model, token);
+    final model = IngredienteDto(id: widget.item?.id ?? 0, nome: _nomeCtrl.text.trim(), marca: _marcaCtrl.text.trim(), preco: parsarDecimal(_precoCtrl.text), status: _status);
+    final erro = widget.item != null ? await service.atualizar(model, token) : await service.cadastrar(model, token);
     if (!mounted) return;
     if (erro != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(erro), backgroundColor: AppColors.deleteFg),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(erro), backgroundColor: AppColors.deleteFg));
     } else {
       Navigator.of(context).pop();
       widget.onSalvar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Salvo com sucesso'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Salvo com sucesso'), backgroundColor: Colors.green));
     }
   }
 
@@ -78,9 +62,7 @@ class _IngredienteModalState extends State<IngredienteModal> {
   Widget build(BuildContext context) {
     final editando = widget.item != null;
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -95,11 +77,7 @@ class _IngredienteModalState extends State<IngredienteModal> {
               children: [
                 Text(
                   editando ? 'Editar Ingrediente' : 'Novo Ingrediente',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 GestureDetector(
@@ -107,15 +85,8 @@ class _IngredienteModalState extends State<IngredienteModal> {
                   child: Container(
                     width: 30,
                     height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                    child: const Icon(Icons.close, color: Colors.white, size: 16),
                   ),
                 ),
               ],
@@ -129,37 +100,17 @@ class _IngredienteModalState extends State<IngredienteModal> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _campo(
-                    controller: _nomeCtrl,
-                    label: 'Nome',
-                    obrigatorio: true,
-                  ),
+                  _campo(controller: _nomeCtrl, label: 'Nome', obrigatorio: true),
                   const SizedBox(height: 12),
                   _campo(controller: _marcaCtrl, label: 'Marca'),
                   const SizedBox(height: 12),
-                  _campo(
-                    controller: _precoCtrl,
-                    label: 'Preço (R\$)',
-                    teclado: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
+                  _campo(controller: _precoCtrl, label: 'Preço por kg (R\$)', teclado: const TextInputType.numberWithOptions(decimal: true)),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Ativo',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Switch(
-                        value: _status,
-                        activeThumbColor: AppColors.accent,
-                        onChanged: (v) => setState(() => _status = v),
-                      ),
+                      const Text('Ativo', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                      Switch(value: _status, activeThumbColor: AppColors.accent, onChanged: (v) => setState(() => _status = v)),
                     ],
                   ),
                 ],
@@ -179,9 +130,7 @@ class _IngredienteModalState extends State<IngredienteModal> {
                       foregroundColor: AppColors.textSecondary,
                       side: const BorderSide(color: AppColors.border),
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     child: const Text('Cancelar'),
                   ),
@@ -195,14 +144,9 @@ class _IngredienteModalState extends State<IngredienteModal> {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text(
-                      'Salvar',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
+                    child: const Text('Salvar', style: TextStyle(fontWeight: FontWeight.w600)),
                   ),
                 ),
               ],
@@ -213,24 +157,14 @@ class _IngredienteModalState extends State<IngredienteModal> {
     );
   }
 
-  Widget _campo({
-    required TextEditingController controller,
-    required String label,
-    bool obrigatorio = false,
-    TextInputType? teclado,
-  }) {
+  Widget _campo({required TextEditingController controller, required String label, bool obrigatorio = false, TextInputType? teclado}) {
     return TextFormField(
       controller: controller,
       keyboardType: teclado,
       style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(
-          color: AppColors.textMuted,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.05,
-        ),
+        labelStyle: const TextStyle(color: AppColors.textMuted, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.05),
         filled: true,
         fillColor: AppColors.inputBg,
         border: OutlineInputBorder(
@@ -245,15 +179,9 @@ class _IngredienteModalState extends State<IngredienteModal> {
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
-      validator:
-          obrigatorio
-              ? (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null
-              : null,
+      validator: obrigatorio ? (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null : null,
     );
   }
 }

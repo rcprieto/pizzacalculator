@@ -30,15 +30,10 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
     super.dispose();
   }
 
-  String get _token =>
-      context.read<AccountService>().usuarioAtual?.token ?? '';
+  String get _token => context.read<AccountService>().usuarioAtual?.token ?? '';
 
   void _carregar() {
-    context.read<IngredienteService>().retornaIngredientes(
-      _token,
-      pageNumber: _pagina,
-      search: _buscaCtrl.text,
-    );
+    context.read<IngredienteService>().retornaIngredientes(_token, pageNumber: _pagina, search: _buscaCtrl.text);
   }
 
   void _abrirModal([IngredienteDto? item]) {
@@ -46,9 +41,7 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => IngredienteModal(item: item, onSalvar: _carregar),
     );
   }
@@ -56,46 +49,26 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
   Future<void> _confirmarExclusao(IngredienteDto item) async {
     final confirmar = await showDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            backgroundColor: AppColors.cardBg,
-            title: const Text(
-              'Excluir ingrediente',
-              style: TextStyle(color: AppColors.textPrimary, fontSize: 16),
-            ),
-            content: Text(
-              'Deseja excluir "${item.nome}"?',
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text(
-                  'Cancelar',
-                  style: TextStyle(color: AppColors.textSecondary),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text(
-                  'Excluir',
-                  style: TextStyle(color: AppColors.deleteFg),
-                ),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        title: const Text('Excluir ingrediente', style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+        content: Text('Deseja excluir "${item.nome}"?', style: const TextStyle(color: AppColors.textSecondary)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar', style: TextStyle(color: AppColors.textSecondary)),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Excluir', style: TextStyle(color: AppColors.deleteFg)),
+          ),
+        ],
+      ),
     );
     if (confirmar == true && mounted) {
-      final erro = await context
-          .read<IngredienteService>()
-          .excluir(item.id, _token);
+      final erro = await context.read<IngredienteService>().excluir(item.id, _token);
       if (mounted && erro != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(erro),
-            backgroundColor: AppColors.deleteFg,
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(erro), backgroundColor: AppColors.deleteFg));
       }
     }
   }
@@ -122,25 +95,15 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
                   child: Row(
                     children: [
                       const SizedBox(width: 10),
-                      const Icon(
-                        Icons.search,
-                        color: AppColors.textMuted,
-                        size: 16,
-                      ),
+                      const Icon(Icons.search, color: AppColors.textMuted, size: 16),
                       const SizedBox(width: 6),
                       Expanded(
                         child: TextField(
                           controller: _buscaCtrl,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 14,
-                          ),
+                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
                           decoration: const InputDecoration(
                             hintText: 'Buscar ingrediente...',
-                            hintStyle: TextStyle(
-                              color: AppColors.textMuted,
-                              fontSize: 14,
-                            ),
+                            hintStyle: TextStyle(color: AppColors.textMuted, fontSize: 14),
                             border: InputBorder.none,
                             isDense: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -161,10 +124,7 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
                 child: Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.barGradient,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  decoration: BoxDecoration(gradient: AppColors.barGradient, borderRadius: BorderRadius.circular(10)),
                   child: const Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ),
@@ -174,53 +134,37 @@ class _IngredienteListaScreenState extends State<IngredienteListaScreen> {
         Container(height: 1, color: AppColors.borderLight),
         // Lista
         Expanded(
-          child:
-              service.carregando
-                  ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.accent),
-                  )
-                  : service.ingredientes.isEmpty
-                  ? const Center(
-                    child: Text(
-                      'Nenhum ingrediente encontrado',
-                      style: TextStyle(color: AppColors.textMuted),
-                    ),
-                  )
-                  : ListView.separated(
-                    itemCount: service.ingredientes.length,
-                    separatorBuilder:
-                        (_, _) => Container(
-                          height: 1,
-                          color: Colors.black.withValues(alpha: 0.04),
-                        ),
-                    itemBuilder: (context, index) {
-                      final item = service.ingredientes[index];
-                      return _IngredienteItem(
-                        item: item,
-                        onEditar: () => _abrirModal(item),
-                        onExcluir: () => _confirmarExclusao(item),
-                      );
-                    },
-                  ),
+          child: service.carregando
+              ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
+              : service.ingredientes.isEmpty
+              ? const Center(
+                  child: Text('Nenhum ingrediente encontrado', style: TextStyle(color: AppColors.textMuted)),
+                )
+              : ListView.separated(
+                  itemCount: service.ingredientes.length,
+                  separatorBuilder: (_, _) => Container(height: 1, color: Colors.black.withValues(alpha: 0.04)),
+                  itemBuilder: (context, index) {
+                    final item = service.ingredientes[index];
+                    return _IngredienteItem(item: item, onEditar: () => _abrirModal(item), onExcluir: () => _confirmarExclusao(item));
+                  },
+                ),
         ),
         if (paginacao != null && paginacao.totalPages > 1)
           _PaginacaoBar(
             paginacaoAtual: _pagina,
             totalPaginas: paginacao.totalPages,
-            onAnterior:
-                _pagina > 1
-                    ? () => setState(() {
-                      _pagina--;
-                      _carregar();
-                    })
-                    : null,
-            onProximo:
-                _pagina < paginacao.totalPages
-                    ? () => setState(() {
-                      _pagina++;
-                      _carregar();
-                    })
-                    : null,
+            onAnterior: _pagina > 1
+                ? () => setState(() {
+                    _pagina--;
+                    _carregar();
+                  })
+                : null,
+            onProximo: _pagina < paginacao.totalPages
+                ? () => setState(() {
+                    _pagina++;
+                    _carregar();
+                  })
+                : null,
           ),
       ],
     );
@@ -232,11 +176,7 @@ class _IngredienteItem extends StatelessWidget {
   final VoidCallback onEditar;
   final VoidCallback onExcluir;
 
-  const _IngredienteItem({
-    required this.item,
-    required this.onEditar,
-    required this.onExcluir,
-  });
+  const _IngredienteItem({required this.item, required this.onEditar, required this.onExcluir});
 
   @override
   Widget build(BuildContext context) {
@@ -248,15 +188,8 @@ class _IngredienteItem extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.iconReceitaBg,
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: const Icon(
-              Icons.egg_alt,
-              color: AppColors.iconReceitaFg,
-              size: 18,
-            ),
+            decoration: BoxDecoration(color: AppColors.iconReceitaBg, borderRadius: BorderRadius.circular(11)),
+            child: const Icon(Icons.egg_alt, color: AppColors.iconReceitaFg, size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -265,34 +198,12 @@ class _IngredienteItem extends StatelessWidget {
               children: [
                 Text(
                   item.nome,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 Row(
                   children: [
-                    if (item.marca.isNotEmpty) ...[
-                      Text(
-                        item.marca,
-                        style: const TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const Text(
-                        ' · ',
-                        style: TextStyle(color: AppColors.textMuted, fontSize: 12),
-                      ),
-                    ],
-                    Text(
-                      formatarMoeda(item.preco),
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
+                    if (item.marca.isNotEmpty) ...[Text(item.marca, style: const TextStyle(color: AppColors.textMuted, fontSize: 12)), const Text(' · ', style: TextStyle(color: AppColors.textMuted, fontSize: 12))],
+                    Text("${formatarMoeda(item.preco)}/kg", style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
                   ],
                 ),
               ],
@@ -301,19 +212,9 @@ class _IngredienteItem extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _ActionBtn(
-                bg: AppColors.editBg,
-                fg: AppColors.editFg,
-                icon: Icons.edit,
-                onTap: onEditar,
-              ),
+              _ActionBtn(bg: AppColors.editBg, fg: AppColors.editFg, icon: Icons.edit, onTap: onEditar),
               const SizedBox(width: 6),
-              _ActionBtn(
-                bg: AppColors.deleteBg,
-                fg: AppColors.deleteFg,
-                icon: Icons.delete_outline,
-                onTap: onExcluir,
-              ),
+              _ActionBtn(bg: AppColors.deleteBg, fg: AppColors.deleteFg, icon: Icons.delete_outline, onTap: onExcluir),
             ],
           ),
         ],
@@ -328,12 +229,7 @@ class _ActionBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _ActionBtn({
-    required this.bg,
-    required this.fg,
-    required this.icon,
-    required this.onTap,
-  });
+  const _ActionBtn({required this.bg, required this.fg, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -342,10 +238,7 @@ class _ActionBtn extends StatelessWidget {
       child: Container(
         width: 34,
         height: 34,
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(9),
-        ),
+        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(9)),
         child: Icon(icon, color: fg, size: 16),
       ),
     );
@@ -358,12 +251,7 @@ class _PaginacaoBar extends StatelessWidget {
   final VoidCallback? onAnterior;
   final VoidCallback? onProximo;
 
-  const _PaginacaoBar({
-    required this.paginacaoAtual,
-    required this.totalPaginas,
-    required this.onAnterior,
-    required this.onProximo,
-  });
+  const _PaginacaoBar({required this.paginacaoAtual, required this.totalPaginas, required this.onAnterior, required this.onProximo});
 
   @override
   Widget build(BuildContext context) {
@@ -373,27 +261,9 @@ class _PaginacaoBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            color:
-                onAnterior != null
-                    ? AppColors.textPrimary
-                    : AppColors.border,
-            onPressed: onAnterior,
-          ),
-          Text(
-            'Página $paginacaoAtual de $totalPaginas',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            color:
-                onProximo != null ? AppColors.textPrimary : AppColors.border,
-            onPressed: onProximo,
-          ),
+          IconButton(icon: const Icon(Icons.chevron_left), color: onAnterior != null ? AppColors.textPrimary : AppColors.border, onPressed: onAnterior),
+          Text('Página $paginacaoAtual de $totalPaginas', style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          IconButton(icon: const Icon(Icons.chevron_right), color: onProximo != null ? AppColors.textPrimary : AppColors.border, onPressed: onProximo),
         ],
       ),
     );

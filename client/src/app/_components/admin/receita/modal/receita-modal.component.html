@@ -39,12 +39,30 @@
     <div class="row g-2">
       <div class="col-12 col-sm-6">
         <label class="form-label">Ingrediente</label>
-        <select class="form-select form-select-sm" [(ngModel)]="ingredienteIdSelecionado">
-          <option [ngValue]="0" disabled>Selecione...</option>
-          @for (ing of ingredientes; track ing.id) {
-          <option [ngValue]="ing.id">{{ ing.nome }}{{ ing.marca ? ' — ' + ing.marca : '' }}</option>
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm"
+                 [(ngModel)]="buscaIngrediente"
+                 (focus)="mostrarListaIngrediente = true"
+                 (blur)="fecharListaIngrediente()"
+                 placeholder="Buscar ingrediente..."
+                 autocomplete="off" />
+          @if (mostrarListaIngrediente && ingredientesFiltrados.length > 0) {
+          <div class="position-absolute w-100 border rounded bg-white shadow-sm"
+               style="z-index:1055;max-height:200px;overflow-y:auto;top:100%;left:0;">
+            @for (ing of ingredientesFiltrados; track ing.id) {
+            <div class="px-3 py-2"
+                 [class.bg-light]="ing.id === ingredienteIdSelecionado"
+                 style="cursor:pointer;font-size:.85rem;"
+                 (mousedown)="selecionarIngrediente(ing)">
+              <span class="fw-500">{{ ing.nome }}</span>
+              @if (ing.marca) {
+              <small class="text-muted"> — {{ ing.marca }}</small>
+              }
+            </div>
+            }
+          </div>
           }
-        </select>
+        </div>
       </div>
       <div class="col-12 col-sm-6">
         <label class="form-label">Grupo</label>
@@ -55,17 +73,12 @@
           }
         </select>
       </div>
-      <div class="col-6 col-sm-3">
+      <div class="col-12 col-sm-3">
         <label class="form-label">Peso (g)</label>
         <input type="number" class="form-control form-control-sm" [(ngModel)]="pesoGItem"
                min="0" step="0.001" />
       </div>
-      <div class="col-6 col-sm-3">
-        <label class="form-label">Percentual (%)</label>
-        <input type="number" class="form-control form-control-sm" [(ngModel)]="percentualItem"
-               min="0" step="0.01" />
-      </div>
-      <div class="col-12 col-sm-6">
+      <div class="col-12 col-sm-9">
         <label class="form-label">Observação</label>
         <input type="text" class="form-control form-control-sm" [(ngModel)]="observacaoItem"
                maxlength="200" placeholder="Opcional..." />
@@ -113,7 +126,7 @@
             }
           </td>
           <td class="text-end text-nowrap">{{ item.pesoG | number:'1.1-3' }}g</td>
-          <td class="text-end">{{ item.percentual | number:'1.1-2' }}%</td>
+          <td class="text-end">{{ pesoFarinha > 0 ? (calcularPercentual(item) | number:'1.1-1') + '%' : '—' }}</td>
           <td class="text-end text-nowrap">{{ item.pesoG * item.ingredientePreco / 1000 | currency:'BRL':'symbol':'1.2-2' }}</td>
           <td class="text-end">
             <div class="d-flex gap-1 justify-content-end">
@@ -140,9 +153,25 @@
         <tr>
           <td>Total</td>
           <td class="text-end text-nowrap">{{ totalPesoG | number:'1.1-1' }}g</td>
-          <td class="text-end">{{ totalPercentual | number:'1.1-1' }}%</td>
+          <td class="text-end">{{ pesoFarinha > 0 ? (totalPercentual | number:'1.1-1') + '%' : '—' }}</td>
           <td class="text-end text-nowrap">{{ totalCusto | currency:'BRL':'symbol':'1.2-2' }}</td>
           <td></td>
+        </tr>
+        <tr style="border-top: 2px solid #ede6dd;">
+          <td colspan="2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-muted" style="font-size:.82rem;">Margem</span>
+              <div class="input-group input-group-sm" style="width:90px;">
+                <input type="number" class="form-control form-control-sm text-center"
+                       [(ngModel)]="margem" min="0" max="100" step="1" />
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+          </td>
+          <td colspan="3" class="text-end">
+            <span class="text-muted" style="font-size:.82rem;">Preço sugerido</span><br>
+            <strong style="color:#c07a0a;font-size:1rem;">{{ precoSugerido | currency:'BRL':'symbol':'1.2-2' }}</strong>
+          </td>
         </tr>
       </tfoot>
       }
