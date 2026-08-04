@@ -13,7 +13,7 @@ class PizzaCalculatorScreen extends StatefulWidget {
 
 class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
   final _quantidadeCtrl = TextEditingController();
-  int _hidratacao = 65;
+  int _hidratacao = 60;
   String _tipo = 'P30';
   bool _calculado = false;
 
@@ -29,12 +29,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
   late int _totalPizzas;
   late int _totalPessoas;
 
-  final _tipos = const [
-    ('P30', 'Pizzas 30cm (1 pizza / pessoa)'),
-    ('P40', 'Pizzas 40cm (1 pizza / 2 pessoas)'),
-    ('PE30', 'Qtd. Pizzas 30cm (0.8 pizza / pessoa)'),
-    ('PE40', 'Qtd. Pizzas 40cm (0.5 pizza / pessoa)'),
-  ];
+  final _tipos = const [('P30', 'Pizzas 30cm (1 pizza / pessoa)'), ('P40', 'Pizzas 40cm (1 pizza / 2 pessoas)'), ('PE30', 'Pessoas (0.8 pizza 30cm / pessoa)'), ('PE40', 'Pessoas (0.5 pizza 40cm / pessoa)')];
 
   @override
   void dispose() {
@@ -110,11 +105,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
                   child: Text(
                     'Calculadora de Pizza',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(width: 48),
@@ -130,11 +121,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
           children: [
             _Secao('Configuração'),
             const SizedBox(height: 10),
-            _campoNumero(
-              controller: _quantidadeCtrl,
-              label: 'Quantidade',
-              hint: 'Ex: 10',
-            ),
+            _campoNumero(controller: _quantidadeCtrl, label: 'Quantidade', hint: 'Ex: 10'),
             const SizedBox(height: 12),
             _dropdownTipo(),
             const SizedBox(height: 12),
@@ -145,17 +132,12 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
               child: ElevatedButton.icon(
                 onPressed: _calcular,
                 icon: const Icon(Icons.calculate, size: 18),
-                label: const Text(
-                  'Calcular',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
+                label: const Text('Calcular', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.barTop,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
@@ -163,11 +145,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
               const SizedBox(height: 24),
               _Secao('Resultado'),
               const SizedBox(height: 10),
-              _ResultadoResumo(
-                totalPizzas: _totalPizzas,
-                totalPessoas: _totalPessoas,
-                totalMassa: _totalMassa,
-              ),
+              _ResultadoResumo(totalPizzas: _totalPizzas, totalPessoas: _totalPessoas, totalMassa: _totalMassa),
               const SizedBox(height: 16),
               _Secao('Ingredientes Totais'),
               const SizedBox(height: 8),
@@ -193,11 +171,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
     );
   }
 
-  Widget _campoNumero({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-  }) {
+  Widget _campoNumero({required TextEditingController controller, required String label, required String hint}) {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.number,
@@ -207,11 +181,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
         labelText: label,
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textMuted),
-        labelStyle: const TextStyle(
-          color: AppColors.textMuted,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
+        labelStyle: const TextStyle(color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600),
         filled: true,
         fillColor: AppColors.inputBg,
         border: OutlineInputBorder(
@@ -244,15 +214,7 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
           dropdownColor: AppColors.cardBg,
           style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
           isExpanded: true,
-          items:
-              _tipos
-                  .map(
-                    (t) => DropdownMenuItem(
-                      value: t.$1,
-                      child: Text(t.$2),
-                    ),
-                  )
-                  .toList(),
+          items: _tipos.map((t) => DropdownMenuItem(value: t.$1, child: Text(t.$2))).toList(),
           onChanged: (v) => setState(() => _tipo = v!),
         ),
       ),
@@ -275,52 +237,24 @@ class _PizzaCalculatorScreenState extends State<PizzaCalculatorScreen> {
             children: [
               const Text(
                 'Hidratação',
-                style: TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600),
               ),
               Text(
                 '$_hidratacao%',
-                style: const TextStyle(
-                  color: AppColors.accent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+                style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ],
           ),
           SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: AppColors.accent,
-              inactiveTrackColor: AppColors.border,
-              thumbColor: AppColors.accent,
-              overlayColor: AppColors.accent.withValues(alpha: 0.1),
-            ),
-            child: Slider(
-              value: _hidratacao.toDouble(),
-              min: 55,
-              max: 85,
-              divisions: 30,
-              onChanged: (v) => setState(() => _hidratacao = v.round()),
-            ),
+            data: SliderTheme.of(context).copyWith(activeTrackColor: AppColors.accent, inactiveTrackColor: AppColors.border, thumbColor: AppColors.accent, overlayColor: AppColors.accent.withValues(alpha: 0.1)),
+            child: Slider(value: _hidratacao.toDouble(), min: 55, max: 85, divisions: 30, onChanged: (v) => setState(() => _hidratacao = v.round())),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              Text(
-                '55%',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-              ),
-              Text(
-                '70% recomendado',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-              ),
-              Text(
-                '85%',
-                style: TextStyle(color: AppColors.textMuted, fontSize: 11),
-              ),
+              Text('55%', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+              Text('70% recomendado', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
+              Text('85%', style: TextStyle(color: AppColors.textMuted, fontSize: 11)),
             ],
           ),
         ],
@@ -337,12 +271,7 @@ class _Secao extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       titulo.toUpperCase(),
-      style: const TextStyle(
-        color: AppColors.textMuted,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.6,
-      ),
+      style: const TextStyle(color: AppColors.textMuted, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.6),
     );
   }
 }
@@ -352,44 +281,22 @@ class _ResultadoResumo extends StatelessWidget {
   final int totalPessoas;
   final double totalMassa;
 
-  const _ResultadoResumo({
-    required this.totalPizzas,
-    required this.totalPessoas,
-    required this.totalMassa,
-  });
+  const _ResultadoResumo({required this.totalPizzas, required this.totalPessoas, required this.totalMassa});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: _CartaoResumo(
-            label: 'Pizzas',
-            valor: '$totalPizzas',
-            icone: Icons.local_pizza,
-            iconeBg: AppColors.iconPizzaBg,
-            iconeFg: AppColors.iconPizzaFg,
-          ),
+          child: _CartaoResumo(label: 'Pizzas', valor: '$totalPizzas', icone: Icons.local_pizza, iconeBg: AppColors.iconPizzaBg, iconeFg: AppColors.iconPizzaFg),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _CartaoResumo(
-            label: 'Pessoas',
-            valor: '$totalPessoas',
-            icone: Icons.people,
-            iconeBg: AppColors.iconAdminBg,
-            iconeFg: AppColors.iconAdminFg,
-          ),
+          child: _CartaoResumo(label: 'Pessoas', valor: '$totalPessoas', icone: Icons.people, iconeBg: AppColors.iconAdminBg, iconeFg: AppColors.iconAdminFg),
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _CartaoResumo(
-            label: 'Massa',
-            valor: '${formatarInteiro(totalMassa)}g',
-            icone: Icons.scale,
-            iconeBg: AppColors.accentBg,
-            iconeFg: AppColors.accent,
-          ),
+          child: _CartaoResumo(label: 'Massa', valor: '${formatarInteiro(totalMassa)}g', icone: Icons.scale, iconeBg: AppColors.accentBg, iconeFg: AppColors.accent),
         ),
       ],
     );
@@ -403,13 +310,7 @@ class _CartaoResumo extends StatelessWidget {
   final Color iconeBg;
   final Color iconeFg;
 
-  const _CartaoResumo({
-    required this.label,
-    required this.valor,
-    required this.icone,
-    required this.iconeBg,
-    required this.iconeFg,
-  });
+  const _CartaoResumo({required this.label, required this.valor, required this.icone, required this.iconeBg, required this.iconeFg});
 
   @override
   Widget build(BuildContext context) {
@@ -425,28 +326,15 @@ class _CartaoResumo extends StatelessWidget {
           Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(
-              color: iconeBg,
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: BoxDecoration(color: iconeBg, borderRadius: BorderRadius.circular(10)),
             child: Icon(icone, color: iconeFg, size: 18),
           ),
           const SizedBox(height: 6),
           Text(
             valor,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
+            style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 15),
           ),
-          Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.textMuted,
-              fontSize: 11,
-            ),
-          ),
+          Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
         ],
       ),
     );
@@ -472,20 +360,10 @@ class _LinhaIngrediente extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
           Text(
             '${valor}g',
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 14),
           ),
         ],
       ),

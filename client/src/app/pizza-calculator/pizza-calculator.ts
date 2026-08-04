@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class PizzaCalculatorComponent {
   numberOfPeople = signal<number | null>(null);
-  hydrationPercentage = signal<number>(65);
+  hydrationPercentage = signal<number>(60);
 
   totalFlour = signal<number | null>(null);
   totalWater = signal<number | null>(null);
