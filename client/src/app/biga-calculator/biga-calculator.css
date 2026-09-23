@@ -1,0 +1,50 @@
+/* Layout base (topbar, cards, campos e resultados) vem de pizza-calculator.css */
+
+/* ── Seletor de modo ─────────────────────── */
+.modo-toggle {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: #faf6f1;
+  border: 1.5px solid #e0d4c8;
+  border-radius: 12px;
+}
+
+.modo-opcao {
+  flex: 1;
+  padding: 0.6rem 0.5rem;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.modo-opcao:hover { color: #1a1a1a; }
+
+.modo-opcao--ativo,
+.modo-opcao--ativo:hover {
+  background: linear-gradient(135deg, #1c0f0a 0%, #3d200e 100%);
+  color: #fff;
+}
+
+/* ── Dica abaixo do campo ────────────────── */
+.field-hint {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* ── Linha de total ──────────────────────── */
+.result-row--total {
+  background: #faf6f1;
+}
+
+.result-row--total .result-row-label,
+.result-row--total .result-row-value {
+  font-weight: 700;
+  color: #1a1a1a;
+}

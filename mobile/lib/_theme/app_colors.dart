@@ -29,6 +29,9 @@ abstract class AppColors {
   static const iconPizzaBg = Color(0xFFfff0ef);
   static const iconPizzaFg = Color(0xFFc0392b);
 
+  static const iconBigaBg = Color(0xFFfdf6ec);
+  static const iconBigaFg = Color(0xFF8b5e3c);
+
   static const iconReceitaBg = Color(0xFFfff8e7);
   static const iconReceitaFg = Color(0xFFc07a0a);
 

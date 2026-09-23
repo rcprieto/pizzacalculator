@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { PizzaCalculatorComponent } from './pizza-calculator/pizza-calculator';
+import { BigaCalculatorComponent } from './biga-calculator/biga-calculator';
 import { MenuComponent } from './menu/menu';
 import { PaoComponent } from './pao/pao';
 import { LoginComponent } from './login/login';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'excluir-conta', component: ExcluirContaComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'pizza', component: PizzaCalculatorComponent },
+  { path: 'biga', component: BigaCalculatorComponent },
   { path: 'pao', component: PaoComponent },
   { path: 'login', component: LoginComponent },
   { path: 'receitas', component: ReceitasComponent, canActivate: [authGuard] },

@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../_screens/admin/admin_shell_screen.dart';
+import '../_screens/biga_calculator/biga_calculator_screen.dart';
 import '../_screens/login/login_screen.dart';
 import '../_screens/menu/menu_screen.dart';
 import '../_screens/pizza_calculator/pizza_calculator_screen.dart';
@@ -37,6 +38,10 @@ GoRouter buildRouter(AccountService accountService) {
       GoRoute(
         path: '/pizza',
         builder: (context, state) => const PizzaCalculatorScreen(),
+      ),
+      GoRoute(
+        path: '/biga',
+        builder: (context, state) => const BigaCalculatorScreen(),
       ),
       GoRoute(
         path: '/admin/receitas',

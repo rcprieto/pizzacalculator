@@ -90,6 +90,15 @@ class MenuScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   _MenuCard(
+                    iconeBg: AppColors.iconBigaBg,
+                    iconeFg: AppColors.iconBigaFg,
+                    icone: Icons.bakery_dining,
+                    titulo: 'Calculadora de Biga',
+                    subtitulo: 'Pela farinha ou pelo peso da biga',
+                    onTap: () => context.go('/biga'),
+                  ),
+                  const SizedBox(height: 10),
+                  _MenuCard(
                     iconeBg: AppColors.iconAdminBg,
                     iconeFg: AppColors.iconAdminFg,
                     icone: logado ? Icons.admin_panel_settings : Icons.lock,
